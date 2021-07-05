@@ -33,9 +33,12 @@ ui <- fluidPage(
                               girafeOutput("mapa"),DT::dataTableOutput("tabla")
                ))),    
     
-    tabPanel("Vacunacion",h1("Test"),sidebarLayout(
-               sidebarPanel(),mainPanel(
-                 girafeOutput("vacunas", height = 700, width = 700)
+    tabPanel("Vacunacion",h1("Vacunacion Uruguaya"),sidebarLayout(
+               sidebarPanel(
+                            selectInput("va","Seleccione las Vacunas",c("Sinovac","Pfizer","Astrazeneca","Todas")),
+                            selectInput("v2", "Analisis",c( "General","Vacunas")) ),
+               mainPanel(
+                            girafeOutput("vacunas")
 
                )))
 ))
@@ -138,18 +141,13 @@ server <- function(input, output, session) {
     
    
    a<- reactive(ggplot(vac2())+
-  
-#GEOM
      
      geom_line(aes(x=date,y=total_vaccinations),size=2,colour="#106D08")+
      geom_point_interactive(aes(x=date,y=total_vaccinations,tooltip=date, data_id=date, fill="a"),colour="#106D08")+
-   
      
      geom_line(aes(x=date,y=people_fully_vaccinated),size=2,colour="#DC7633")+
      geom_point_interactive(aes(x=date,y=people_fully_vaccinated,tooltip=date, data_id=date, fill="b"),colour="#DC7633")+
-    
 
-    #TEMA
      scale_y_continuous(labels=comma)+scale_x_date(date_breaks = "1 month")+
      labs(y="Vacunas Totales", x="Fecha")+
      scale_fill_manual(name="Estado",
@@ -163,14 +161,47 @@ server <- function(input, output, session) {
    
    
    
+spad<- reactive(vacunacion%>%select(date,total_astrazeneca,total_coronavac,total_pfizer))
    
+spag<-reactive(
+
+  if(input$va=="Sinovac"){
+  ggplot(spad())+geom_point_interactive(aes(x=date,y=total_coronavac),color="#F96E19")+
+                 geom_line(aes(x=date,y=total_coronavac),color="#F96E19")
+  
+}else if (input$va=="Astrazeneca") {
+  ggplot(spad())+geom_point_interactive(aes(x=date,y=total_astrazeneca),color="#A708DA")+
+                 geom_line(aes(x=date,y=total_astrazeneca),color="#A708DA")
+  
+}else if(input$va=="Pfizer"){
+  ggplot(spad())+geom_point_interactive(aes(x=date,y=total_pfizer),color="#495CE7")+
+                 geom_line(aes(x=date,y=total_pfizer),color="#495CE7")
+  
+}else {
+  ggplot(spad())+geom_point_interactive(aes(x=date,y=total_coronavac,fill="a"),color="#F96E19")+
+    geom_line(aes(x=date,y=total_coronavac),color="#F96E19")+
+    
+    geom_point_interactive(aes(x=date,y=total_astrazeneca,fill="b"),color="#A708DA")+
+    geom_line(aes(x=date,y=total_astrazeneca),color="#A708DA")+
+    
+    geom_point_interactive(aes(x=date,y=total_pfizer,fill="c"),color="#495CE7")+
+    geom_line(aes(x=date,y=total_pfizer),color="#495CE7")+  
+    scale_fill_manual(name="Estado",
+    labels=c("a"="Vacunas Totales","b"="Personas vacunadas totalmente"),
+    values = c('#106D08','#DC7633'),
+    aesthetics = c("colour","fill"))+  
+    guides(fill = guide_legend(override.aes = list(shape = 21)))
+    
+}
+
    
-   
-   
-   
-   
-   
-   
+
+)
+spag2<-reactive(
+  spag()
+)
+
+spagd<-reactive(print(spad(p1),spad(p2),spad(p3)))
    
 #Calls
   output$mapa<-renderGirafe(girafe(ggobj = graf(),width_svg = 7, height_svg = 4, 
@@ -183,7 +214,7 @@ server <- function(input, output, session) {
 
   
   
-  output$vacunas <-  renderGirafe(girafe(ggobj = a(),width_svg = 7, height_svg = 4, 
+  output$vacunas <-  renderGirafe(girafe(ggobj = spag(),width_svg = 7, height_svg = 4, 
                                   options=list(opts_sizing(rescale=TRUE),
                                                opts_zoom(min = 0.5, max = 1.5)
                                   )))
