@@ -1,0 +1,10 @@
+---
+title: "Covid-19"
+author: "Nicolas Ferreira | Luis Gagñevin"
+date: "7/5/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
