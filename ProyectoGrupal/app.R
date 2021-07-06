@@ -3,7 +3,6 @@
 library(shiny)
 library(shinydashboard)
 
-
 # Datos mundiales (Para mapamundi)
 library(sf)
 library(rnaturalearth)
@@ -20,19 +19,19 @@ library(ggplot2)
 library(ggiraph)
 library(dygraphs)
 library(xts)
+library(ggpmisc)
 
-# DataSets || En caso de no descargar COVID.csv, comentar la fila 14 y descomentar la 13
-#cgd<-read.csv("https://query.data.world/s/25w3mrdsnje6zupnls5pajt3ruf6in", header=TRUE, stringsAsFactors=FALSE);
-cgd<- read.csv("COVID.csv")
-vacunacion<- read.csv("https://raw.githubusercontent.com/3dgiordano/covid-19-uy-vacc-data/main/data/Uruguay.csv")
+#Datos<-read.csv("https://query.data.world/s/25w3mrdsnje6zupnls5pajt3ruf6in", header=TRUE, stringsAsFactors=FALSE);     # DATOS ACTUALIZABLES DIA A DIA
+Datos<- read.csv("COVID.csv")
+#vacunacion<- read.csv("https://raw.githubusercontent.com/3dgiordano/covid-19-uy-vacc-data/main/data/Uruguay.csv")
 world <- ne_countries(scale = "medium", returnclass = "sf")
-Datos<- cgd
 
-##########
-## ui.R ##
-##########
 
-#### Encabezado ####
+      ##########
+      ## ui.R ##
+      ##########
+
+    #### Encabezado ####
 
 encabezado <- dashboardHeader(title = "COVID-19 | ANALISIS")
 
@@ -61,7 +60,7 @@ barra_lateral <- dashboardSidebar(
              
             # INPUTS VACUNACION // ignorar es para ver como se hace todo    
              selectInput("va","Seleccione el Pais",
-                        c("Uruguay","Argentina","Brasil","Chile")))
+                        c("Uruguay","Argentina","Brazil","Chile")))
     
   ) # CLOSES SIDEBARMENU
   ) # CLOSES DASHBOARDSIDEBAR
@@ -75,14 +74,26 @@ contenido <- dashboardBody(
     tabItem(tabName = "inicio", h1("Introduccion")),
     tabItem(tabName = "ver", 
             tabsetPanel(
-            tabPanel("Visualizacion", 
+              tabPanel("Visualizacion", 
                     fluidRow(     
                     box(
-                    title = "Analisis temporal", status = "danger", solidHeader = TRUE,width = 700, 
-                    dygraphOutput("vacunas")
+                        title = "Analisis temporal", status = "primary", solidHeader = TRUE,width = 700, 
+                        dygraphOutput("vacunas")
                     ) 
                     )
-            )
+              ),
+              tabPanel("Picos", 
+                     fluidRow(
+                     box(
+                         title = "Maximo de Casos",status="warning",solidHeader = TRUE,width=350,
+                         plotOutput("test33")
+                     ),
+                     box(title = "Maximo de Muertes",status="danger",solidHeader = TRUE,width=350,
+                         plotOutput("test32")
+                       
+                     )
+                     )
+              )
             )
   ),
   
@@ -92,7 +103,7 @@ contenido <- dashboardBody(
           tabPanel("Mapa",
                   fluidRow(
                   box(
-                  title="Mapa Global", status="danger", solidHeader=TRUE, width = 1000, 
+                  title="Mapa Global", status="success", solidHeader=TRUE, width = 1000, 
                   p("Pasa el mouse sobre un pais para saber la cantidad de casos/Muertes"),girafeOutput("mapa")
                   )
                   )
@@ -110,7 +121,7 @@ contenido <- dashboardBody(
 
 ## UI - Interfaz del Usuario ##
 
-ui <- dashboardPage(skin = "black", encabezado, barra_lateral, contenido)
+ui <- dashboardPage(skin = "purple", encabezado, barra_lateral, contenido)
 
 
 
@@ -127,13 +138,20 @@ server <- function(input, output, session) {
   
   
   #OPTIMIZACION EN PROGRESO
+
+  Datos$REPORT_DATE<- as.Date(Datos$REPORT_DATE)
+  colnames(Datos) = c("PEOPLE_POSITIVE_CASES_COUNT", "COUNTY_NAME","PROVINCE_STATE_NAME","REPORT_DATE" ,"CONTINENT_NAME","DATA_SOURCE_NAME",
+                      "PEOPLE_DEATH_NEW_COUNT","COUNTY_FIPS_NUMBER","COUNTRY_ALPHA_3_CODE",
+                      "COUNTRY","COUNTRY_ALPHA_2_CODE","PEOPLE_POSITIVE_NEW_CASES_COUNT", "PEOPLE_DEATH_COUNT")
   
-  # SELECCION DE FECHA
-  ###############
-  cgd$REPORT_DATE<- as.Date(cgd$REPORT_DATE)
+  Datos$COUNTRY <- factor(Datos$COUNTRY)
   
+  
+  
+  
+  # Date selector
   casos2<-reactive(
-    cgd %>%group_by(COUNTRY_SHORT_NAME) %>% filter(REPORT_DATE==input$fecha)
+    Datos %>%group_by(COUNTRY) %>% filter(REPORT_DATE==input$fecha)
   )  
   
   # CAMBIO SEGUN DIARIO/TOTAL | INFECTADOS/MUERTES
@@ -155,16 +173,17 @@ server <- function(input, output, session) {
   }
   )
   
-  # CAMBIO DE NOMBRES PARA EL MERGE
+  # CAMBIO DE NOMBRES PARA EL MERGE DE PAISES CON DISTINTO NOMBRE
   casos<- reactive(casos3()%>% 
-                     mutate( COUNTRY_SHORT_NAME=recode(COUNTRY_SHORT_NAME,
+                     mutate( COUNTRY=recode(COUNTRY,
                                                        `United States`="United States of America", 
                                                        `Congo (Brazzaville)`="Republic of Congo",
                                                        `Congo (Kinshasa)`="Democratic Republic of the Congo",
-                                                       `Tanzania`="United Republic of Tanzania")))
+                                                       `Tanzania`="United Republic of Tanzania",
+                                                        `Cote d'Ivoire`="Ivory Coast"    )))
   
   # MERGE DATOS GLOBALES Y CASOS  
-  COVID.world <- reactive(merge(world, casos(), by.x="admin", by.y="COUNTRY_SHORT_NAME"))
+  COVID.world <- reactive(merge(world, casos(), by.x="admin", by.y="COUNTRY"))
   
   # Mapamundi Grafico Paises
   
@@ -189,38 +208,18 @@ server <- function(input, output, session) {
   
   
   
-  ######################################################
-  ######################################################
-  ######################################################
-  ######################################################
-  Datos<- cgd
-  colnames(Datos) = c("PEOPLE_POSITIVE_CASES_COUNT", "COUNTY_NAME","PROVINCE_STATE_NAME","REPORT_DATE" ,"CONTINENT_NAME","DATA_SOURCE_NAME",
-                      "PEOPLE_DEATH_NEW_COUNT","COUNTY_FIPS_NUMBER","COUNTRY_ALPHA_3_CODE",
-                      "COUNTRY","COUNTRY_ALPHA_2_CODE","PEOPLE_POSITIVE_NEW_CASES_COUNT", "PEOPLE_DEATH_COUNT")
   
-  Datos$COUNTRY <- factor(Datos$COUNTRY)
-  Datos$REPORT_DATE <- as.Date(Datos$REPORT_DATE)
+  #####  #####  #####  #####  #####  #####  #####  #####  #####  #####  #####    
+# DYGRAPH
+
+
+  #Datos$REPORT_DATE <- as.Date(Datos$REPORT_DATE)
   
   datos_UY_Por_Fecha <-reactive( 
     
-    if(input$va=="Uruguay"){
-      Datos %>% filter(COUNTRY == "Uruguay") %>% 
-        select(REPORT_DATE, starts_with("People_")) %>% 
-        arrange(REPORT_DATE)
-    }else if(input$va=="Brasil"){  
-      Datos %>% filter(COUNTRY == "Brazil") %>% 
-        select(REPORT_DATE, starts_with("People_")) %>% 
-        arrange(REPORT_DATE)
-    }else if(input$va=="Argentina"){  
-      Datos %>% filter(COUNTRY == "Argentina") %>% 
-        select(REPORT_DATE, starts_with("People_")) %>% 
-        arrange(REPORT_DATE)
-    }else{
-      Datos %>% filter(COUNTRY == "Chile") %>% 
-        select(REPORT_DATE, starts_with("People_")) %>% 
-        arrange(REPORT_DATE)
-      }
-    
+    Datos %>% filter(COUNTRY == input$va) %>% 
+      select(REPORT_DATE, starts_with("People_")) %>% 
+      arrange(REPORT_DATE)
     )
     
 
@@ -229,14 +228,52 @@ server <- function(input, output, session) {
                                order.by = datos_UY_Por_Fecha()$REPORT_DATE))
  
   
+  dyg<-reactive({dygraph(datos_UY_Por_Fecha_ts()) %>% 
+      dyOptions(labelsUTC = TRUE, labelsKMB = TRUE,
+                fillGraph = TRUE, fillAlpha = 0.05,
+                drawGrid = FALSE) %>% dyRangeSelector() %>% 
+      dyCrosshair(direction = "vertical")%>%
+      dyLegend(show="always",width = 400)})
   
-  ######################################################
-  ######################################################
-  ######################################################
+  
+##### #####  #####  #####  #####  #####  #####  #####  #####  #####  #####  #####   
+
+  test<-reactive(
+    Datos %>% filter(COUNTRY==input$va)
+   )
+  
+  maximo<-reactive(
+    test()%>%filter(PEOPLE_POSITIVE_NEW_CASES_COUNT==max(PEOPLE_POSITIVE_NEW_CASES_COUNT))
+   )
   
   
+  test2<-reactive(
+    ggplot(test(),aes(x=REPORT_DATE,y=PEOPLE_POSITIVE_NEW_CASES_COUNT))+
+    geom_line()+
+      
+      geom_point(aes(x=maximo()$REPORT_DATE,y=maximo()$PEOPLE_POSITIVE_NEW_CASES_COUNT),color="red")+
+      
+      geom_text(aes(x=maximo()$REPORT_DATE,y=maximo()$PEOPLE_POSITIVE_NEW_CASES_COUNT),
+                label=paste0(maximo()$REPORT_DATE),color="red", vjust=-.5)+
+      labs(x="Fecha", y="Casos de infectados diarios")
+    
+    )
+  maximo2<-reactive(
+    test()%>%filter(PEOPLE_DEATH_NEW_COUNT==max(PEOPLE_DEATH_NEW_COUNT))
+  )
   
   
+  test21<-reactive(
+    ggplot(test(),aes(x=REPORT_DATE,y=PEOPLE_DEATH_NEW_COUNT))+
+      geom_line()+
+      
+      geom_point(aes(x=maximo2()$REPORT_DATE,y=maximo2()$PEOPLE_DEATH_NEW_COUNT),color="red")+
+      
+      geom_text(aes(x=maximo2()$REPORT_DATE,y=maximo2()$PEOPLE_DEATH_NEW_COUNT),
+                label=paste0(maximo2()$REPORT_DATE),color="red", vjust=-.5)+
+      labs(x="Fecha", y="Muertes diarias")
+    
+  )
   
  
   #Calls
@@ -248,13 +285,9 @@ server <- function(input, output, session) {
   
   output$tabla <- DT::renderDataTable({casos()})
   
-  output$vacunas<- renderDygraph({dygraph(datos_UY_Por_Fecha_ts()) %>% 
-      dyOptions(labelsUTC = TRUE, labelsKMB = TRUE,
-                fillGraph = TRUE, fillAlpha = 0.05,
-                drawGrid = FALSE) %>% dyRangeSelector() %>% 
-      dyCrosshair(direction = "vertical")%>%
-      dyLegend(show="always",width = 400)})
-
+  output$vacunas<- renderDygraph({dyg()})
+  output$test33<- renderPlot({test2()})
+  output$test32<- renderPlot({test21()})
 }
 
 
