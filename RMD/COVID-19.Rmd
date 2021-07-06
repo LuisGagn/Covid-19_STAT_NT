@@ -83,9 +83,9 @@ cgd %>%
   group_by(CONTINENT_NAME) %>% 
   summarise("Personas contagiadas" = sum(PEOPLE_POSITIVE_NEW_CASES_COUNT),
             "Personas fallecidas" = sum(PEOPLE_DEATH_NEW_COUNT)) %>%
-  arrange("Personas contagiadas")
+  arrange("Personas contagiadas")%>%
   xtable(caption = "Cantidad de personas contagiadas por continente") %>%
-  print(caption.placement = 'top', include.rownames = FALSE)
+  print(caption.placement = 'top', include.rownames = FALSE, comment=FALSE)
 
   
 ```
@@ -110,11 +110,11 @@ fig1<- datos_UY_Por_Fecha %>% ggplot() +
 print(fig1)
 ```
 
-###Analisis por cohortes para America
+### Analisis por cohortes para America
 
 En esta sección trabajaremos con los datos segmentados de acuerdo a la fecha de primer contagio por país. 
 
-```{r, echo=FALSE}
+```{r,message=FALSE, echo=FALSE}
 #Visualizo por pais la fecha de primer contagio
 primer_contagio <- cgd %>% 
   filter(CONTINENT_NAME == "America") %>% 
@@ -138,22 +138,26 @@ Datos_Primer_Contagio <- cgd %>%
 
 fig2 <- Datos_Primer_Contagio %>% 
   ggplot(aes(x= Dias_Desde_Primer_Contagio, y=Casos_Confirmados_Acumulados)) +
-  geom_line(aes(col=COUNTRY)) + theme(legend.position = "none") +
+  geom_line(aes(col=COUNTRY)) + 
+  theme(legend.position = "none") +
   labs(x = "Dias desde el primer contagio", y = "Numeros de personas contagiadas")+
   scale_y_continuous(labels=comma) 
 
 print(fig2)
 ```
 
-###Analisis por cohortes para America
+### Analisis por cohortes para America
 
-```{r, echo=TRUE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y personas fallecidas en los paises de la región.\\label{f3}'}
-fig3 <- Datos_Region %>% ggplot() + geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Nuevos casos positivos")) +
-    geom_line(aes(x=REPORT_DATE, y=PEOPLE_DEATH_COUNT, color = "Cantidad de personas fallecidas")) + 
-    facet_wrap(~COUNTRY, scales = "free") + 
+```{r, echo=TRUE,message=FALSE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y personas fallecidas en los paises de la región.\\label{f3}'}
+fig3 <- Datos_Region %>% ggplot() + 
+  geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Nuevos casos positivos")) +
+  geom_line(aes(x=REPORT_DATE, y=PEOPLE_DEATH_COUNT, color = "Cantidad de personas fallecidas")) + 
+  facet_wrap(~COUNTRY, scales = "free") + 
   labs(x = "Fecha", y = "Cantidad de personas") +
   theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 6),
-        legend.position = "bottom") + scale_colour_brewer(palette = "Dark2") 
+        legend.position = "bottom", legend.title = element_blank()) + scale_colour_brewer(palette = "Dark2")+
+  scale_y_continuous(labels=comma) 
+
 print(fig3)
 ```
 
