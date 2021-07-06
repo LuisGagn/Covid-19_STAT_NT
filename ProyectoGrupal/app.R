@@ -56,14 +56,12 @@ barra_lateral <- dashboardSidebar(
              selectInput("tipo2", "Selecciona Datos", c("Muertes","Infectados"))
              ), # CLOSES MENUITEM MAPA
     
-    menuItem("Vacunacion", tabName = "vcaa", icon = icon("syringe"),
+    menuItem("Linea Temporal Latam", tabName = "vcaa", icon = icon("chart-area"),
              menuSubItem("Ver", tabName = "ver", icon = icon("plus-square")),
              
             # INPUTS VACUNACION // ignorar es para ver como se hace todo    
-             selectInput("va","Seleccione las Vacunas",
-                        c("Sinovac","Pfizer","Astrazeneca","Todas")),
-             selectInput("v2", "Analisis",
-                        c( "General","Vacunas")) )
+             selectInput("va","Seleccione el Pais",
+                        c("Uruguay","Argentina","Brasil","Chile")))
     
   ) # CLOSES SIDEBARMENU
   ) # CLOSES DASHBOARDSIDEBAR
@@ -80,7 +78,7 @@ contenido <- dashboardBody(
             tabPanel("Visualizacion", 
                     fluidRow(     
                     box(
-                    title = "Vacunacion", status = "danger", solidHeader = TRUE,width = 700, 
+                    title = "Analisis temporal", status = "danger", solidHeader = TRUE,width = 700, 
                     dygraphOutput("vacunas")
                     ) 
                     )
@@ -113,6 +111,7 @@ contenido <- dashboardBody(
 ## UI - Interfaz del Usuario ##
 
 ui <- dashboardPage(skin = "black", encabezado, barra_lateral, contenido)
+
 
 
 
@@ -202,27 +201,33 @@ server <- function(input, output, session) {
   Datos$COUNTRY <- factor(Datos$COUNTRY)
   Datos$REPORT_DATE <- as.Date(Datos$REPORT_DATE)
   
-  datos_UY_Por_Fecha <- Datos %>% filter(COUNTRY == "Uruguay") %>% 
-    select(REPORT_DATE, starts_with("People_")) %>% 
-    arrange(REPORT_DATE)
+  datos_UY_Por_Fecha <-reactive( 
+    
+    if(input$va=="Uruguay"){
+      Datos %>% filter(COUNTRY == "Uruguay") %>% 
+        select(REPORT_DATE, starts_with("People_")) %>% 
+        arrange(REPORT_DATE)
+    }else if(input$va=="Brasil"){  
+      Datos %>% filter(COUNTRY == "Brazil") %>% 
+        select(REPORT_DATE, starts_with("People_")) %>% 
+        arrange(REPORT_DATE)
+    }else if(input$va=="Argentina"){  
+      Datos %>% filter(COUNTRY == "Argentina") %>% 
+        select(REPORT_DATE, starts_with("People_")) %>% 
+        arrange(REPORT_DATE)
+    }else{
+      Datos %>% filter(COUNTRY == "Chile") %>% 
+        select(REPORT_DATE, starts_with("People_")) %>% 
+        arrange(REPORT_DATE)
+      }
+    
+    )
+    
+
   
-  datos_UY_Por_Fecha_ts <- xts(x=datos_UY_Por_Fecha[,3:5],
-                               order.by = datos_UY_Por_Fecha$REPORT_DATE)
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  datos_UY_Por_Fecha_ts <- reactive(xts(x=datos_UY_Por_Fecha()[,3:5],
+                               order.by = datos_UY_Por_Fecha()$REPORT_DATE))
+ 
   
   
   ######################################################
@@ -243,11 +248,12 @@ server <- function(input, output, session) {
   
   output$tabla <- DT::renderDataTable({casos()})
   
-  output$vacunas<- renderDygraph({dygraph(datos_UY_Por_Fecha_ts) %>% 
+  output$vacunas<- renderDygraph({dygraph(datos_UY_Por_Fecha_ts()) %>% 
       dyOptions(labelsUTC = TRUE, labelsKMB = TRUE,
                 fillGraph = TRUE, fillAlpha = 0.05,
                 drawGrid = FALSE) %>% dyRangeSelector() %>% 
-      dyCrosshair(direction = "vertical")})
+      dyCrosshair(direction = "vertical")%>%
+      dyLegend(show="always",width = 400)})
 
 }
 
