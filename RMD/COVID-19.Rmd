@@ -37,6 +37,7 @@ library(forecast)
 library(maps)
 library(data.table)
 library(scales)
+library(xtable)
 ```
 
 ## Resumen
@@ -64,9 +65,31 @@ colnames(cgd) = c("PEOPLE_POSITIVE_CASES_COUNT", "COUNTY_NAME","PROVINCE_STATE_N
 
 cgd$COUNTRY <- factor(cgd$COUNTRY)
 cgd$REPORT_DATE <- as.Date(cgd$REPORT_DATE, format = "%y/%m/%d")
+
+vacunacion$date <- as.Date(vacunacion$date, format = "%y/%m/%d")
+
+Datos_Region <- cgd %>% 
+  filter(CONTINENT_NAME == "America") %>% 
+  group_by(COUNTRY) %>%
+  filter(COUNTRY == c("Uruguay", "Argentina", "Brazil", "Paraguay", "Chile", "Venezuela", "Peru", "Colombia", "Ecuador")) %>% 
+  select(REPORT_DATE, starts_with("People_")) %>% 
+  arrange(REPORT_DATE)
 ```
 
 ## Análisis exploratorio de los datos
+
+```{r, echo=FALSE, results='asis', fig.pos = 'H', fig.cap='Resumen de contagios y fallecidos por continente.\\label{t1}'}
+cgd %>% 
+  group_by(CONTINENT_NAME) %>% 
+  summarise("Personas contagiadas" = sum(PEOPLE_POSITIVE_NEW_CASES_COUNT),
+            "Personas fallecidas" = sum(PEOPLE_DEATH_NEW_COUNT)) %>%
+  arrange("Personas contagiadas")
+  xtable(caption = "Cantidad de personas contagiadas por continente") %>%
+  print(caption.placement = 'top', include.rownames = FALSE)
+
+  
+```
+
 
 ### Evolución del Covid-19 en Uruguay
 
@@ -79,6 +102,7 @@ datos_UY_Por_Fecha <- cgd %>% filter(COUNTRY == "Uruguay") %>%
 fig1<- datos_UY_Por_Fecha %>% ggplot() + 
   geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Casos nuevos")) +
   geom_line(aes(x=REPORT_DATE, y=PEOPLE_DEATH_COUNT, color = "Fallecidos")) +
+  geom_vline(aes(xintercept= ymd("2021-02-27"),color="Comienzo de vacunación"), linetype="dashed", size= 1)+
   labs(x= "Fecha", y = "Cantidad de personas") + 
   theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 8),
         legend.position = "right") + scale_colour_brewer(palette = "Dark2") +
@@ -109,15 +133,28 @@ Datos_Primer_Contagio <- cgd %>%
             Fallecimientos_Por_Dia = sum(PEOPLE_DEATH_NEW_COUNT),
             Fallecimientos_Acumulados = sum(PEOPLE_DEATH_COUNT))
 ```
+
 ```{r, echo=TRUE, fig.pos = 'H', fig.cap='Evolución de la epidemia desde el primer día de contagio por país. Se puede observar claramente que en Estados Unidos y Brasil la ola de contagios fue significativamente superior a los restantes paises del continente.\\label{f2}'}
 
-g <- Datos_Primer_Contagio %>% 
+fig2 <- Datos_Primer_Contagio %>% 
   ggplot(aes(x= Dias_Desde_Primer_Contagio, y=Casos_Confirmados_Acumulados)) +
   geom_line(aes(col=COUNTRY)) + theme(legend.position = "none") +
   labs(x = "Dias desde el primer contagio", y = "Numeros de personas contagiadas")+
   scale_y_continuous(labels=comma) 
 
-print(g)
+print(fig2)
+```
+
+###Analisis por cohortes para America
+
+```{r, echo=TRUE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y personas fallecidas en los paises de la región.\\label{f3}'}
+fig3 <- Datos_Region %>% ggplot() + geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Nuevos casos positivos")) +
+    geom_line(aes(x=REPORT_DATE, y=PEOPLE_DEATH_COUNT, color = "Cantidad de personas fallecidas")) + 
+    facet_wrap(~COUNTRY, scales = "free") + 
+  labs(x = "Fecha", y = "Cantidad de personas") +
+  theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 6),
+        legend.position = "bottom") + scale_colour_brewer(palette = "Dark2") 
+print(fig3)
 ```
 
 
