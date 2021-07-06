@@ -120,3 +120,7 @@ g <- Datos_Primer_Contagio %>%
 print(g)
 ```
 
+
+## Aplicación Shiny
+
+## Conclusiones
