@@ -1,10 +1,122 @@
 ---
-title: "Covid-19"
-author: "Nicolas Ferreira | Luis Gagñevin"
-date: "7/5/2021"
-output: pdf_document
+title: "Proyecto Final - Covid-19"
+author: "Nicolás Ferreira | Luis Gagñevin"
+date: "5/7/2021"
+header-includes: 
+- \usepackage{float} 
+- \floatplacement{figure}{H}
+output:
+  pdf_document: default
+  fig_caption: FALSE
 ---
+
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+```{r, echo=FALSE, include = FALSE, message=FALSE}
+library(tidyverse)
+library(readr)
+library(here)
+library(dplyr)
+library(ggpmisc)
+library(readxl)
+library(gapminder)
+library(tinytex)
+library(ggplot2)
+library(plotly)
+library(gridExtra)
+library(lubridate)
+library(xts)
+library(dygraphs)
+library(plotly)
+library(car)
+library(forecast)
+library(maps)
+library(data.table)
+library(scales)
+```
+
+## Resumen
+
+El siguiente trabajo tiene como objetivo la presentación del proyecto final del curso *Nuevas Tecnologías para el análisis estadístico de datos* del año 2021. A lo largo del mismo, se aplicarán distintas herramientas computacionales aprendidas en el curso para realizar un análisis exploratorio del Covid-19. Para su aplicación, se hará uso del software Rstudio, realizando una aplicación web Shiny, siendo reporoducible y disponible para su uso en GitHub.
+
+## Introducción
+
+¿Como ha sido la evolución de Coronavirus en la región? ¿Cuando fue el pico de muertes en Uruguay? ¿Es Uruguay el país en la situación más crítica en la actualidad?¿Han sido las vacunas un impacto significativo en la reducción de casos? Estas sos preguntas que pueden surgir naturalmente cuando tratamos en el tema del Covid-19.
+
+Para responder esto, hay diversas fuentes de datos que permiten un relevamiento de toda la información. En nuestro caso, trabajaremos sobre un conjunto de datos actualizados de *data.wolrd*, los cuales tienen el recuento de casos positivos, nuevos, recuento de personas fallecidas y por día, para todos los paises del mundo. A su vez, trabajaremos con los datos de las vacunas en Uruguay, proporcionados por la cátedra y los cúales se encuentran en GitHub. 
+
+A partir de ellos, pretendemos dar respuesta a estas interrogantes, analizando de manera descriptiva los datos hasta el momento, aplicando las diversas técnicas aprendidas durante el curso.
+
+## Datos
+
+```{r, echo=FALSE, include=FALSE}
+cgd <- read_csv("COVID-19 Activity.csv")
+vacunacion <- read.csv("https://raw.githubusercontent.com/3dgiordano/covid-19-uy-vacc-data/main/data/Uruguay.csv")
+#Manipulacion
+str(cgd)
+colnames(cgd) = c("PEOPLE_POSITIVE_CASES_COUNT", "COUNTY_NAME","PROVINCE_STATE_NAME","REPORT_DATE" ,"CONTINENT_NAME","DATA_SOURCE_NAME",
+                    "PEOPLE_DEATH_NEW_COUNT","COUNTY_FIPS_NUMBER","COUNTRY_ALPHA_3_CODE",
+                    "COUNTRY","COUNTRY_ALPHA_2_CODE","PEOPLE_POSITIVE_NEW_CASES_COUNT", "PEOPLE_DEATH_COUNT")
+
+cgd$COUNTRY <- factor(cgd$COUNTRY)
+cgd$REPORT_DATE <- as.Date(cgd$REPORT_DATE, format = "%y/%m/%d")
+```
+
+## Análisis exploratorio de los datos
+
+### Evolución del Covid-19 en Uruguay
+
+```{r, echo=TRUE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y fallecidos por Covid-19 en Uruguay.\\label{f1}'}
+
+datos_UY_Por_Fecha <- cgd %>% filter(COUNTRY == "Uruguay") %>% 
+  select(REPORT_DATE, starts_with("People_")) %>% 
+  arrange(REPORT_DATE)
+
+fig1<- datos_UY_Por_Fecha %>% ggplot() + 
+  geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Casos nuevos")) +
+  geom_line(aes(x=REPORT_DATE, y=PEOPLE_DEATH_COUNT, color = "Fallecidos")) +
+  labs(x= "Fecha", y = "Cantidad de personas") + 
+  theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 8),
+        legend.position = "right") + scale_colour_brewer(palette = "Dark2") +
+  guides(color=guide_legend(""))
+print(fig1)
+```
+
+###Analisis por cohortes para America
+
+En esta sección trabajaremos con los datos segmentados de acuerdo a la fecha de primer contagio por país. 
+
+```{r, echo=FALSE}
+#Visualizo por pais la fecha de primer contagio
+primer_contagio <- cgd %>% 
+  filter(CONTINENT_NAME == "America") %>% 
+  group_by(COUNTRY) %>% 
+  filter(PEOPLE_POSITIVE_CASES_COUNT >0) %>% 
+  summarise(Primer_Contagio = ymd(min(REPORT_DATE)-1)) %>% 
+  arrange(Primer_Contagio)
+
+Datos_Primer_Contagio <- cgd %>% 
+  inner_join(primer_contagio, by = "COUNTRY") %>% 
+  mutate(Dias_Desde_Primer_Contagio = as.numeric(REPORT_DATE - Primer_Contagio)) %>% 
+  filter(Dias_Desde_Primer_Contagio >=0) %>% 
+  group_by(Dias_Desde_Primer_Contagio, COUNTRY) %>% 
+  summarise(Casos_Confirmados_Acumulados = sum(PEOPLE_POSITIVE_CASES_COUNT),
+            Casos_Nuevos = sum(PEOPLE_POSITIVE_NEW_CASES_COUNT),
+            Fallecimientos_Por_Dia = sum(PEOPLE_DEATH_NEW_COUNT),
+            Fallecimientos_Acumulados = sum(PEOPLE_DEATH_COUNT))
+```
+```{r, echo=TRUE, fig.pos = 'H', fig.cap='Evolución de la epidemia desde el primer día de contagio por país. Se puede observar claramente que en Estados Unidos y Brasil la ola de contagios fue significativamente superior a los restantes paises del continente.\\label{f2}'}
+
+g <- Datos_Primer_Contagio %>% 
+  ggplot(aes(x= Dias_Desde_Primer_Contagio, y=Casos_Confirmados_Acumulados)) +
+  geom_line(aes(col=COUNTRY)) + theme(legend.position = "none") +
+  labs(x = "Dias desde el primer contagio", y = "Numeros de personas contagiadas")+
+  scale_y_continuous(labels=comma) 
+
+print(g)
+```
+
