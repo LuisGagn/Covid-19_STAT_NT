@@ -1,21 +1,32 @@
 # LIBRERIAS
+# Shiny cosas
 library(shiny)
 library(shinydashboard)
-library(tidyverse)
-library(DT)
-library(scales)
+
+
+# Datos mundiales (Para mapamundi)
 library(sf)
 library(rnaturalearth)
 library(rnaturalearthdata)
-library(ggplot2)
+
+# Manejo Data
 library(lubridate)
+library(DT)
+library(tidyverse)
+
+# Graficos
+library(scales)
+library(ggplot2)
 library(ggiraph)
+library(dygraphs)
+library(xts)
+
 # DataSets || En caso de no descargar COVID.csv, comentar la fila 14 y descomentar la 13
 #cgd<-read.csv("https://query.data.world/s/25w3mrdsnje6zupnls5pajt3ruf6in", header=TRUE, stringsAsFactors=FALSE);
 cgd<- read.csv("COVID.csv")
 vacunacion<- read.csv("https://raw.githubusercontent.com/3dgiordano/covid-19-uy-vacc-data/main/data/Uruguay.csv")
 world <- ne_countries(scale = "medium", returnclass = "sf")
-
+Datos<- cgd
 
 ##########
 ## ui.R ##
@@ -70,7 +81,7 @@ contenido <- dashboardBody(
                     fluidRow(     
                     box(
                     title = "Vacunacion", status = "danger", solidHeader = TRUE,width = 700, 
-                    girafeOutput("vacunas")
+                    dygraphOutput("vacunas")
                     ) 
                     )
             )
@@ -116,9 +127,6 @@ ui <- dashboardPage(skin = "black", encabezado, barra_lateral, contenido)
 server <- function(input, output, session) {
   
   
-  
-  
-  
   #OPTIMIZACION EN PROGRESO
   
   # SELECCION DE FECHA
@@ -159,17 +167,6 @@ server <- function(input, output, session) {
   # MERGE DATOS GLOBALES Y CASOS  
   COVID.world <- reactive(merge(world, casos(), by.x="admin", by.y="COUNTRY_SHORT_NAME"))
   
-  #################
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   # Mapamundi Grafico Paises
   
   graf2<-reactive(ggplot(COVID.world()) + 
@@ -193,74 +190,50 @@ server <- function(input, output, session) {
   
   
   
-  # Vacunacion    
-  vacunacion$date<- as.Date(vacunacion$date)
-  vac2<-reactive( vacunacion%>%select(date,total_vaccinations, people_fully_vaccinated))
+  ######################################################
+  ######################################################
+  ######################################################
+  ######################################################
+  Datos<- cgd
+  colnames(Datos) = c("PEOPLE_POSITIVE_CASES_COUNT", "COUNTY_NAME","PROVINCE_STATE_NAME","REPORT_DATE" ,"CONTINENT_NAME","DATA_SOURCE_NAME",
+                      "PEOPLE_DEATH_NEW_COUNT","COUNTY_FIPS_NUMBER","COUNTRY_ALPHA_3_CODE",
+                      "COUNTRY","COUNTRY_ALPHA_2_CODE","PEOPLE_POSITIVE_NEW_CASES_COUNT", "PEOPLE_DEATH_COUNT")
   
+  Datos$COUNTRY <- factor(Datos$COUNTRY)
+  Datos$REPORT_DATE <- as.Date(Datos$REPORT_DATE)
   
-  a<- reactive(ggplot(vac2())+
-                 
-                 geom_line(aes(x=date,y=total_vaccinations),size=2,colour="#106D08")+
-                 geom_point_interactive(aes(x=date,y=total_vaccinations,tooltip=date, data_id=date, fill="a"),colour="#106D08")+
-                 
-                 geom_line(aes(x=date,y=people_fully_vaccinated),size=2,colour="#DC7633")+
-                 geom_point_interactive(aes(x=date,y=people_fully_vaccinated,tooltip=date, data_id=date, fill="b"),colour="#DC7633")+
-                 
-                 scale_y_continuous(labels=comma)+scale_x_date(date_breaks = "1 month")+
-                 labs(y="Vacunas Totales", x="Fecha")+
-                 scale_fill_manual(name="Estado",
-                                   labels=c("a"="Vacunas Totales","b"="Personas vacunadas totalmente"),
-                                   values = c('#106D08','#DC7633'),
-                                   aesthetics = c("colour","fill"))+  
-                 guides(fill = guide_legend(override.aes = list(shape = 21)))
-  )
+  datos_UY_Por_Fecha <- Datos %>% filter(COUNTRY == "Uruguay") %>% 
+    select(REPORT_DATE, starts_with("People_")) %>% 
+    arrange(REPORT_DATE)
+  
+  datos_UY_Por_Fecha_ts <- xts(x=datos_UY_Por_Fecha[,3:5],
+                               order.by = datos_UY_Por_Fecha$REPORT_DATE)
   
   
   
   
   
-  spad<- reactive(vacunacion%>%select(date,total_astrazeneca,total_coronavac,total_pfizer))
   
-  spag<-reactive(
-    
-    if(input$va=="Sinovac"){
-      ggplot(spad())+geom_point_interactive(aes(x=date,y=total_coronavac),color="#F96E19")+
-        geom_line(aes(x=date,y=total_coronavac),color="#F96E19")
-      
-    }else if (input$va=="Astrazeneca") {
-      ggplot(spad())+geom_point_interactive(aes(x=date,y=total_astrazeneca),color="#A708DA")+
-        geom_line(aes(x=date,y=total_astrazeneca),color="#A708DA")
-      
-    }else if(input$va=="Pfizer"){
-      ggplot(spad())+geom_point_interactive(aes(x=date,y=total_pfizer),color="#495CE7")+
-        geom_line(aes(x=date,y=total_pfizer),color="#495CE7")
-      
-    }else {
-      ggplot(spad())+geom_point_interactive(aes(x=date,y=total_coronavac,fill="a"),color="#F96E19")+
-        geom_line(aes(x=date,y=total_coronavac),color="#F96E19")+
-        
-        geom_point_interactive(aes(x=date,y=total_astrazeneca,fill="b"),color="#A708DA")+
-        geom_line(aes(x=date,y=total_astrazeneca),color="#A708DA")+
-        
-        geom_point_interactive(aes(x=date,y=total_pfizer,fill="c"),color="#495CE7")+
-        geom_line(aes(x=date,y=total_pfizer),color="#495CE7")+  
-        scale_fill_manual(name="Estado",
-                          labels=c("a"="Vacunas Totales","b"="Personas vacunadas totalmente"),
-                          values = c('#106D08','#DC7633'),
-                          aesthetics = c("colour","fill"))+  
-        guides(fill = guide_legend(override.aes = list(shape = 21)))
-      
-    }
-    
-    
-    
-  )
-  spag2<-reactive(
-    spag()
-  )
   
-  spagd<-reactive(print(spad(p1),spad(p2),spad(p3)))
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  ######################################################
+  ######################################################
+  ######################################################
+  
+  
+  
+  
+  
+ 
   #Calls
   output$mapa<-renderGirafe(girafe(ggobj = graf(),width_svg = 7, height_svg = 4, 
                                    options=list(opts_sizing(rescale=TRUE), 
@@ -270,12 +243,12 @@ server <- function(input, output, session) {
   
   output$tabla <- DT::renderDataTable({casos()})
   
-  
-  
-  output$vacunas <-  renderGirafe(girafe(ggobj = spag(),width_svg = 7, height_svg = 4, 
-                                         options=list(opts_sizing(rescale=TRUE),
-                                                      opts_zoom(min = 0.5, max = 1.5)
-                                         )))
+  output$vacunas<- renderDygraph({dygraph(datos_UY_Por_Fecha_ts) %>% 
+      dyOptions(labelsUTC = TRUE, labelsKMB = TRUE,
+                fillGraph = TRUE, fillAlpha = 0.05,
+                drawGrid = FALSE) %>% dyRangeSelector() %>% 
+      dyCrosshair(direction = "vertical")})
+
 }
 
 
