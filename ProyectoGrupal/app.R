@@ -55,7 +55,7 @@ barra_lateral <- dashboardSidebar(
              selectInput("tipo2", "Selecciona Datos", c("Muertes","Infectados"))
              ), # CLOSES MENUITEM MAPA
     
-    menuItem("Linea Temporal Latam", tabName = "vcaa", icon = icon("chart-area"),
+    menuItem("Lineas Temporales", tabName = "vcaa", icon = icon("chart-area"),
              menuSubItem("Ver", tabName = "ver", icon = icon("plus-square")),
              
             # INPUTS VACUNACION // ignorar es para ver como se hace todo    
@@ -93,7 +93,16 @@ contenido <- dashboardBody(
                        
                      )
                      )
-              )
+              ),
+              tabPanel("Vacunacion",
+                       fluidRow(
+                         box(
+                           title = "Efectos de la Vacunacion",status="success",solidHeader = TRUE,width=350,
+                           plotOutput("vacunacion2")
+                         )
+                       )
+                       
+                       )
             )
   ),
   
@@ -215,7 +224,7 @@ server <- function(input, output, session) {
 
   #Datos$REPORT_DATE <- as.Date(Datos$REPORT_DATE)
   
-  datos_UY_Por_Fecha <-reactive( 
+  datos_Por_Fecha <-reactive( 
     
     Datos %>% filter(COUNTRY == input$va) %>% 
       select(REPORT_DATE, starts_with("People_")) %>% 
@@ -224,11 +233,11 @@ server <- function(input, output, session) {
     
 
   
-  datos_UY_Por_Fecha_ts <- reactive(xts(x=datos_UY_Por_Fecha()[,3:5],
-                               order.by = datos_UY_Por_Fecha()$REPORT_DATE))
+  datos_Por_Fecha_ts <- reactive(xts(x=datos_Por_Fecha()[,3:5],
+                               order.by = datos_Por_Fecha()$REPORT_DATE))
  
   
-  dyg<-reactive({dygraph(datos_UY_Por_Fecha_ts()) %>% 
+  dyg<-reactive({dygraph(datos_Por_Fecha_ts()) %>% 
       dyOptions(labelsUTC = TRUE, labelsKMB = TRUE,
                 fillGraph = TRUE, fillAlpha = 0.05,
                 drawGrid = FALSE) %>% dyRangeSelector() %>% 
@@ -275,7 +284,46 @@ server <- function(input, output, session) {
     
   )
   
- 
+  ##### #####  #####  #####  #####  #####  #####  #####  #####  #####  #####  #####   
+  
+  
+  
+  datos_UY_Por_Fecha <- reactive(
+    Datos %>% filter(COUNTRY == "Uruguay") %>% 
+    select(REPORT_DATE, starts_with("People_")) %>% 
+    arrange(REPORT_DATE)
+    )
+  
+  fig1<-reactive(
+    datos_UY_Por_Fecha()%>% ggplot() + 
+    geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Casos nuevos")) +
+    geom_line(aes(x=REPORT_DATE, y=PEOPLE_DEATH_NEW_COUNT, color = "Fallecidos diariamente")) +
+    geom_vline(aes(xintercept= ymd("2021-02-27"),color="Comienzo de vacunación"), 
+               linetype="dashed", size= 1)+
+    geom_text(aes(x=ymd("2021-02-27"),y=0),label=paste0("2021-02-27"),color="#d95f02",vjust=1.5,hjust=1.1)+
+    labs(x= "Fecha", y = "Cantidad de personas") + 
+    theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 8),
+          legend.position = "right") + 
+    scale_colour_brewer(palette = "Dark2") +
+    guides(color=guide_legend(""))
+    )
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   #Calls
   output$mapa<-renderGirafe(girafe(ggobj = graf(),width_svg = 7, height_svg = 4, 
                                    options=list(opts_sizing(rescale=TRUE), 
@@ -288,6 +336,7 @@ server <- function(input, output, session) {
   output$vacunas<- renderDygraph({dyg()})
   output$test33<- renderPlot({test2()})
   output$test32<- renderPlot({test21()})
+  output$vacunacion2<-renderPlot({fig1()})
 }
 
 
