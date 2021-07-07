@@ -78,6 +78,19 @@ Datos_Region <- cgd %>%
 
 ## Análisis exploratorio de los datos
 
+La base de datos con la que trabajaremos contiene información del Covid-19 a partir el 21 de Enero de 2020. Para nuestro análisis, las variables que consideraremos relevantes son:
+
+- País
+- Continente
+- Fecha
+- Cantidad de personas positivas
+- Cantidad de nuevos contagios por día
+- Cantidad de fallecimientos
+- Cantidad de fallecimientos por día
+
+Como primer acercamiento hacia los datos, se presenta la siguiene tabla la cuál resume la cantidad de personas contagiadas por el Covid-19 y el número de fallecimientos por continente desde el 21 de Enero de 2020 hasta el 17 de Junio de 2021.
+
+
 ```{r, echo=FALSE, results='asis', fig.pos = 'H', fig.cap='Resumen de contagios y fallecidos por continente.\\label{t1}'}
 cgd %>% 
   group_by(CONTINENT_NAME) %>% 
@@ -85,13 +98,13 @@ cgd %>%
             "Personas fallecidas" = sum(PEOPLE_DEATH_NEW_COUNT)) %>%
   arrange("Personas contagiadas")%>%
   xtable(caption = "Cantidad de personas contagiadas por continente") %>%
-  print(caption.placement = 'top', include.rownames = FALSE, comment=FALSE)
-
   
+  print(caption.placement = 'top', include.rownames = FALSE, comment=FALSE)
 ```
-
-
 ### Evolución del Covid-19 en Uruguay
+
+Si nos centramos en nuestro país, el primer contagio se da el 12 de Marzo de 2020.
+
 
 ```{r, echo=TRUE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y fallecidos por Covid-19 en Uruguay.\\label{f1}'}
 
@@ -113,6 +126,19 @@ print(fig1)
 ### Analisis por cohortes para America
 
 En esta sección trabajaremos con los datos segmentados de acuerdo a la fecha de primer contagio por país. 
+
+```{r, echo=FALSE, results='asis', fig.pos = 'H', fig.cap='Fecha de primer contagio por país.\\label{t2}'}
+primer_contagio <- cgd %>% 
+  filter(CONTINENT_NAME == "America") %>% 
+  group_by(COUNTRY) %>% 
+  filter(PEOPLE_POSITIVE_CASES_COUNT >0) %>% 
+  summarise(Primer_Contagio = ymd(min(REPORT_DATE)-1)) %>% 
+  arrange(Primer_Contagio) %>% 
+  xtable(caption = "Cantidad de personas contagiadas por continente") %>%
+  
+  print(caption.placement = 'top', include.rownames = FALSE, comment=FALSE)
+```
+
 
 ```{r,message=FALSE, echo=FALSE}
 #Visualizo por pais la fecha de primer contagio
@@ -146,7 +172,6 @@ fig2 <- Datos_Primer_Contagio %>%
 print(fig2)
 ```
 
-### Analisis por cohortes para America
 
 ```{r, echo=TRUE,message=FALSE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y personas fallecidas en los paises de la región.\\label{f3}'}
 fig3 <- Datos_Region %>% ggplot() + 
