@@ -43,13 +43,17 @@ library(xtable)
 
 ## Resumen
 
-El siguiente trabajo tiene como objetivo la presentación del proyecto final del curso *Nuevas Tecnologías para el análisis estadístico de datos* del año 2021. A lo largo del mismo, se aplicarán distintas herramientas computacionales aprendidas en el curso para realizar un análisis exploratorio del Covid-19. Para su aplicación, se hará uso del software Rstudio, realizando una aplicación web Shiny, siendo reporoducible y disponible para su uso en GitHub.
+El siguiente trabajo tiene como objetivo la presentación del proyecto final del curso *Nuevas Tecnologías para el análisis estadístico de datos* del año 2021. A lo largo del mismo, se aplicarán distintas herramientas computacionales aprendidas en el curso para realizar un análisis exploratorio del Covid-19. Para su aplicación, se hará uso del software Rstudio, realizando una aplicación web Shiny, siendo reporoducible y disponible para su uso en GitHub.  
+Se busca el analisis del efecto en la poblacion del virus COVID-19 y la respuesta de la vacunacion contra el mismo.  
 
 ## Introducción
 
+EL COVID-19 nos ha afectado de gran manera en estos años, empezando a fines del 2019 con una infeccion en China generando la pandemia a nivel global que nos afecta hasta el dia de hoy.  
+Es un virus muy grave que afecta las vias respiratorias de la persona y en mayor manera a la poblacion de mayor edad y/o con enfermedades respiratorias o pobres condiciones fisicas.  
+
 ¿Como ha sido la evolución de Coronavirus en la región? ¿Cuando fue el pico de muertes en Uruguay? ¿Es Uruguay el país en la situación más crítica en la actualidad?¿Han sido las vacunas un impacto significativo en la reducción de casos? Estas sos preguntas que pueden surgir naturalmente cuando tratamos en el tema del Covid-19.
 
-Para responder esto, hay diversas fuentes de datos que permiten un relevamiento de toda la información. En nuestro caso, trabajaremos sobre un conjunto de datos actualizados de *data.wolrd*, los cuales tienen el recuento de casos positivos, nuevos, recuento de personas fallecidas y por día, para todos los paises del mundo. A su vez, trabajaremos con los datos de las vacunas en Uruguay, proporcionados por la cátedra y los cúales se encuentran en GitHub. 
+Para responder esto, hay diversas fuentes de datos que permiten un relevamiento de toda la información. En nuestro caso, trabajaremos sobre un conjunto de datos actualizados de *data.wolrd*, los cuales tienen el recuento de casos positivos, nuevos, recuento de personas fallecidas y por día, para todos los paises del mundo. A su vez, trabajaremos con los datos de las vacunas en Uruguay, tomados del [repositorio de 3dgiordano](https://github.com/3dgiordano/covid-19-uy-vacc-data/blob/main/data/Uruguay.csv) los cuales se actualizan dia a dia con una gran informacion.
 
 A partir de ellos, pretendemos dar respuesta a estas interrogantes, analizando de manera descriptiva los datos hasta el momento, aplicando las diversas técnicas aprendidas durante el curso.
 
@@ -83,7 +87,7 @@ La base de datos con la que trabajaremos contiene información del Covid-19 a pa
 
 - País
 - Continente
-- Fecha
+- Fecha 
 - Cantidad de personas positivas
 - Cantidad de nuevos contagios por día
 - Cantidad de fallecimientos
