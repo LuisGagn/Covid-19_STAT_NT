@@ -19,11 +19,11 @@ library(ggplot2)
 library(ggiraph)
 library(dygraphs)
 library(xts)
-library(ggpmisc)
+
 
 #Datos<-read.csv("https://query.data.world/s/25w3mrdsnje6zupnls5pajt3ruf6in", header=TRUE, stringsAsFactors=FALSE);     # DATOS ACTUALIZABLES DIA A DIA
 Datos<- read.csv("COVID.csv")
-#vacunacion<- read.csv("https://raw.githubusercontent.com/3dgiordano/covid-19-uy-vacc-data/main/data/Uruguay.csv")
+vacunacion<- read.csv("https://raw.githubusercontent.com/3dgiordano/covid-19-uy-vacc-data/main/data/Uruguay.csv")
 world <- ne_countries(scale = "medium", returnclass = "sf")
 
 
@@ -310,14 +310,7 @@ server <- function(input, output, session) {
   
 
   
-  
-  
-  
-  
-  
-  
-  
-  
+
   
   
   

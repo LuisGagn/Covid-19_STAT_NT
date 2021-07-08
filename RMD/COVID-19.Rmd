@@ -2,6 +2,7 @@
 title: "Proyecto Final - Covid-19"
 author: "Nicolás Ferreira | Luis Gagñevin"
 date: "5/7/2021"
+lang: "es"
 header-includes: 
 - \usepackage{float} 
 - \floatplacement{figure}{H}
@@ -66,7 +67,7 @@ colnames(cgd) = c("PEOPLE_POSITIVE_CASES_COUNT", "COUNTY_NAME","PROVINCE_STATE_N
 cgd$COUNTRY <- factor(cgd$COUNTRY)
 cgd$REPORT_DATE <- as.Date(cgd$REPORT_DATE, format = "%y/%m/%d")
 
-vacunacion$date <- as.Date(vacunacion$date, format = "%y/%m/%d")
+vacunacion$date <- as.Date(vacunacion$date)
 
 Datos_Region <- cgd %>% 
   filter(CONTINENT_NAME == "America") %>% 
@@ -106,7 +107,7 @@ cgd %>%
 Si nos centramos en nuestro país, el primer contagio se da el 12 de Marzo de 2020.
 
 
-```{r, echo=TRUE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y fallecidos por Covid-19 en Uruguay.\\label{f1}'}
+```{r, echo=FALSE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y fallecidos por Covid-19 en Uruguay.\\label{f1}'}
 
 datos_UY_Por_Fecha <- cgd %>% filter(COUNTRY == "Uruguay") %>% 
   select(REPORT_DATE, starts_with("People_")) %>% 
@@ -160,7 +161,7 @@ Datos_Primer_Contagio <- cgd %>%
             Fallecimientos_Acumulados = sum(PEOPLE_DEATH_COUNT))
 ```
 
-```{r, echo=TRUE, fig.pos = 'H', fig.cap='Evolución de la epidemia desde el primer día de contagio por país. Se puede observar claramente que en Estados Unidos y Brasil la ola de contagios fue significativamente superior a los restantes paises del continente.\\label{f2}'}
+```{r, echo=FALSE, fig.pos = 'H', fig.cap='Evolución de la epidemia desde el primer día de contagio por país. Se puede observar claramente que en Estados Unidos y Brasil la ola de contagios fue significativamente superior a los restantes paises del continente.\\label{f2}'}
 
 fig2 <- Datos_Primer_Contagio %>% 
   ggplot(aes(x= Dias_Desde_Primer_Contagio, y=Casos_Confirmados_Acumulados)) +
@@ -173,7 +174,7 @@ print(fig2)
 ```
 
 
-```{r, echo=TRUE,message=FALSE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y personas fallecidas en los paises de la región.\\label{f3}'}
+```{r, echo=FALSE,message=FALSE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y personas fallecidas en los paises de la región.\\label{f3}'}
 fig3 <- Datos_Region %>% ggplot() + 
   geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Nuevos casos positivos")) +
   geom_line(aes(x=REPORT_DATE, y=PEOPLE_DEATH_COUNT, color = "Cantidad de personas fallecidas")) + 
@@ -186,7 +187,112 @@ fig3 <- Datos_Region %>% ggplot() +
 print(fig3)
 ```
 
+### Analisis Vacunatorio en Uruguay
+
+```{r, echo=FALSE, fig.pos="H", fig.cap="Evolucion del proceso vacunatorio en Uruguay"}
+Uruguay_Vacunas<-vacunacion %>% select(date,total_vaccinations,people_vaccinated,people_fully_vaccinated,daily_vaccinated)%>%
+  mutate(
+    indicefv=((people_fully_vaccinated/3029358)*100),
+    indicevp=((people_vaccinated/3029358)*100),
+    unadosis=(people_vaccinated-people_fully_vaccinated),
+    indiceu=((unadosis/3029358)*100),
+    nodosis=(100-indicevp))
+
+  ggplot(Uruguay_Vacunas)+
+  geom_line(aes(x=date,y=indicefv/100, group=1,color="Poblacion con dos dosis"), size=1.5)+scale_x_date(breaks = "20 days")+
+  geom_line(aes(x=date,y=indicevp/100, group=1,color="Poblacion con almenos una dosis"), size=1.5)+
+      scale_y_continuous(labels=scales::percent)+
+    scale_color_manual(name="Indices",values=c("Poblacion con dos dosis"="#3FC600","Poblacion con almenos una dosis"="#DF7B0A"))+
+    theme(legend.position="bottom")+
+    labs(y="Porcentaje de vacunacion",x="Fecha")
+
+  
+  
+
+
+```
+
+
+Viendo el desarrollo de la vacunacion en Uruguay, podemos sacar el indice vacunatorio de la region total.
+Para ello aparte de los datos de vacunacion, tomamos la cantidad de poblacion en Uruguay segun el INE y realizamos el calculo del indice.  
+  
+Podemos ver que aproximadamente el `r print(paste(round(max(Uruguay_Vacunas$indicevp)),"%"))` de la poblacion a recibido almenos una de las dos dosis necesarias para ello, en cambio, la cantidad de personas con ambas dosis (Lo cual es considerado como la vacunacion total) es del `r print(paste(round(max(Uruguay_Vacunas$indicefv)),"%"))`.
+dejandonos un `r print(paste(round(max(Uruguay_Vacunas$indicevp))-round(max(Uruguay_Vacunas$indicefv)),"%"))` con una dosis faltante y un 
+`r print(paste(round(min(Uruguay_Vacunas$nodosis)),"%"))` sin haber recibido ninguna dosis.  
+  
+
+Viendo la pandemia como un tema tan importante y relevante en nuestro bienestar, podemos ver que en Uruguay llevo un total de 3 meses llegar a vacunar con ambas dosis al 50% del pais, teniendo en cuenta todos los problemas con transporte, compra/venta de las dosis, relaciones exteriores del pais, entre otros, no es un mal ritmo y nos encontramos bastante cerca de la inmunidad colectiva.    
+  
+La inmunidad colectiva es un factor que se da al momento de que un porcentaje alto (Por lo general entre 80-95%(OMS)) de la poblacion esta vacunada contra dicha enfermedad y que en alrededor de 14 dias desde la fecha un porcentaje mayor de personas tendran las 2 dosis, tenemos la esperanza de estar en el 80% de vacunados en breve tiempo.
+  
+
+### ¿Como fue el efecto de la vacunacion?
+
+Esto es algo que puede verse en la Shiny, aun asi, podemos observar como la vacunacion ayuda a reducir velozmente la mortalidad de el COVID-19.  
+
+  
+
+```{r, echo=FALSE, fig.pos="H", fig.cap="Efecto de la vacunacion en infecciones"}
+    UY<-cgd %>% filter(COUNTRY=="Uruguay")
+   
+  
+  maximo<-UY%>%filter(PEOPLE_POSITIVE_NEW_CASES_COUNT==max(PEOPLE_POSITIVE_NEW_CASES_COUNT))
+   
+  
+  
+
+    ggplot(UY,aes(x=REPORT_DATE,y=PEOPLE_POSITIVE_NEW_CASES_COUNT))+
+    geom_line()+
+      
+      geom_point(aes(x=maximo$REPORT_DATE,y=maximo$PEOPLE_POSITIVE_NEW_CASES_COUNT),color="red")+
+      
+      geom_text(aes(x=maximo$REPORT_DATE,y=maximo$PEOPLE_POSITIVE_NEW_CASES_COUNT),
+                label=paste0(maximo$REPORT_DATE),color="red", vjust=-.5)+
+      labs(x="Fecha", y="Casos de infectados diarios")+
+          geom_vline(aes(xintercept= ymd("2021-02-27"),color="Comienzo de vacunación"), linetype="dashed", size= 1)+
+      theme(legend.position = "bottom",legend.title = element_blank())+
+      geom_text(aes(x=ymd("2021-02-27"),y=0),label=paste0("2021-02-27"),color="#d95f02",vjust=1.5,hjust=1.1)
+```
+
+
+```{r, echo=FALSE, fig.pos="H", fig.cap="Efecto de la vacunacion en muertes"}
+ 
+  maximo2<-
+    UY%>%filter(PEOPLE_DEATH_NEW_COUNT==max(PEOPLE_DEATH_NEW_COUNT))
+  
+  
+  
+ 
+    ggplot(UY,aes(x=REPORT_DATE,y=PEOPLE_DEATH_NEW_COUNT))+
+      geom_line()+
+      
+      geom_point(aes(x=maximo2$REPORT_DATE,y=maximo2$PEOPLE_DEATH_NEW_COUNT),color="red")+
+      
+      geom_text(aes(x=maximo2$REPORT_DATE,y=maximo2$PEOPLE_DEATH_NEW_COUNT),
+                label=paste0(maximo2$REPORT_DATE),color="red", vjust=-.5)+
+      labs(x="Fecha", y="Muertes diarias")+  
+      geom_vline(aes(xintercept= ymd("2021-02-27"),color="Comienzo de vacunación"), linetype="dashed", size= 1)+
+      theme(legend.position = "bottom",legend.title = element_blank())+
+      geom_text(aes(x=ymd("2021-02-27"),y=0),label=paste0("2021-02-27"),color="#d95f02",vjust=1,hjust=1.1)
+
+  
+```
+Podemos notar que el pico de muertes e infecciones es en el mismo dia, sin embargo, vemos como la vacuna tiene un efecto importante contra la mortalidad del virus COVID-19 reduciendo la mortalidad de esta drasticamente en cambio, la infeccion aun se mantiene de manera "constante" 
+
+
 
 ## Aplicación Shiny
+
+  
+Nuestra aplicacion Shiny, esta realizada de forma que sea interactiva y atractiva a la vista aparte de ser informativa y ayudar de manera importante al analisis realizado sobre el virus COVID-19.  
+
+La aplicacion utiliza:
+  
+* ggplot para la mayor parte de graficos
++ ggiraph para el mapamundi interactivo
++ dygraph y xts en lineas temporales
++ tidyverse para el manejo de datos de las tablas
++ shinydashboard para la interfaz amigable y moderna
+
 
 ## Conclusiones
