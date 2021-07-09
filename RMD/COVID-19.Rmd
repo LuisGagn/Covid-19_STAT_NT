@@ -123,7 +123,7 @@ fig1<- datos_UY_Por_Fecha %>% ggplot() +
   geom_vline(aes(xintercept= ymd("2021-02-27"),color="Comienzo de vacunación"), linetype="dashed", size= 1)+
   labs(x= "Fecha", y = "Cantidad de personas") + 
   theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 8),
-        legend.position = "right") + scale_colour_brewer(palette = "Dark2") +
+        legend.position = "bottom") + scale_colour_brewer(palette = "Dark2") +
   guides(color=guide_legend(""))
 print(fig1)
 ```
@@ -165,18 +165,18 @@ Datos_Primer_Contagio <- cgd %>%
             Fallecimientos_Acumulados = sum(PEOPLE_DEATH_COUNT))
 ```
 
-```{r, echo=FALSE, fig.pos = 'H', fig.cap='Evolución de la epidemia desde el primer día de contagio por país. Se puede observar claramente que en Estados Unidos y Brasil la ola de contagios fue significativamente superior a los restantes paises del continente.\\label{f2}'}
+```{r, echo=FALSE, fig.pos = 'H', fig.cap='Evolución de la epidemia desde el primer día de contagio por país. Se puede observar claramente que en Estados Unidos y Brasil la ola de contagios fue notoriamente superior a los restantes paises del continente.\\label{f2}'}
 paises<-c("United States", "Brazil", "Uruguay")
 maximos<- Datos_Primer_Contagio%>%filter(COUNTRY %in% paises)%>%select(COUNTRY,Dias_Desde_Primer_Contagio,Casos_Confirmados_Acumulados)%>%group_by(COUNTRY) %>% summarise(maximo=max(Casos_Confirmados_Acumulados))
 
 
 fig2 <- Datos_Primer_Contagio %>% 
-  ggplot(aes(x= Dias_Desde_Primer_Contagio, y=Casos_Confirmados_Acumulados)) +
+  ggplot(aes(x= Dias_Desde_Primer_Contagio, y=Casos_Confirmados_Acumulados/1000000)) +
   geom_line(aes(col=COUNTRY)) + 
   theme(legend.position = "none") +
-  labs(x = "Dias desde el primer contagio", y = "Numeros de personas contagiadas")+
+  labs(x = "Dias desde el primer contagio", y = "Numeros de personas contagiadas (millones)")+
   scale_y_continuous(labels=comma) +
-    annotate("text", x=500,y=maximos$maximo, label=maximos$COUNTRY)
+    annotate("text", x=500,y=maximos$maximo/1000000, label=maximos$COUNTRY)
   
   
 print(fig2)
