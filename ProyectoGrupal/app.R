@@ -69,9 +69,44 @@ barra_lateral <- dashboardSidebar(
 #### Contenido ####
 contenido <- dashboardBody(
   
-# DASH VACUNACION || IGNORAR TESTEO / APRENDIZAJE  
+ 
   tabItems(
-    tabItem(tabName = "inicio", h1("Introduccion")),
+    tabItem(tabName = "inicio", h1("Introduccion"),
+            h3("El Coronavirus"),p("El virus COVID-19 (Coronavirus) nos esta afectando continuamente desde fines del 2019 desde su aparicion en China y siendo este
+                                   declarado como pandemia el 11 de marzo del 2020."),
+            HTML("<br><br>"),
+            h4("Objetivo de la aplicacion"), p("El objetivo principal de la aplicacion es poder visualizar y ayudar a visualizar de manera interactiva el efecto del virus COVID-19 en 
+                                               la poblacion, tanto de la region como en el mundo. 
+                                               A su vez mostrar como manejo Uruguay la vacunacion y como la misma afecto y de que manera"),
+                                             p("Para lograr eso realizamos varios analisis y diagramas donde la persona podra interactuar y ver por su propia cuenta
+                                                como evoluciono la Pandemia"),
+            
+            HTML("<br>"),
+            h4("Informe"),p("Contamos con un informe detallado con informacion muy relevante que servira de ayuda al momento de visualizar la aplicacion.",
+                            a(href="https://raw.githubusercontent.com/LuisGagn/Covid-19_STAT_NT/main/RMD/COVID-19.pdf?token=ATTCHVE3EUMFQXYWTGGBMP3A46MTS","Link del PDF")),
+            HTML("<br>"),
+            h4("Desarrollo"), p("La aplicacion se desarrollo utilizando el lenguaje de ciencia de datos: R, junto con la aplicacion RStudio, 
+                                para poder ver el desarrollo de la misma, podran ingresar al link del repositorio en GitHub enlistado en el final de esta diapositiva" ),
+            HTML("<br>"),
+            h4("Datos Utilizados"),p("Los datos utilizados fueron obtenidos de la plataforma", a(href="https://data.world/covid-19-data-resource-hub/covid-19-case-counts/workspace/file?filename=COVID-19+Activity.csv","data.world"), 
+            "donde se actualizan dia a dia con informacion de todo el mundo, 
+                                     tambien datos obtenidos del repositorio de:",a(href="https://github.com/3dgiordano/covid-19-uy-vacc-data","3dgiordano"),
+            "los cuales contienen una gran informacion sobre la vacunacion en Uruguay y son actualizados diariamente con datos del",a(href="https://monitor.uruguaysevacuna.gub.uy/","monitor de vacunacion")),
+            
+            
+            
+            
+            HTML("<br><br><br>"),
+            p("Proyecto STAT_NT | FCEA"),
+            h4("Profesores:"),
+            p("Natalia DaSilva | Federico"),
+            h4("Alumnos"),
+            p("Nicolas Ferreira | Luis Gagñevin"),
+            HTML("<br><br><br>"),
+            p(icon=icon("github"), a(href="https://github.com/LuisGagn/Covid-19_STAT_NT", "Repositorio"))),
+    
+    
+    
     tabItem(tabName = "ver", 
             tabsetPanel(
               tabPanel("Visualizacion", 
@@ -85,10 +120,10 @@ contenido <- dashboardBody(
               tabPanel("Picos", 
                      fluidRow(
                      box(
-                         title = "Maximo de Casos",status="warning",solidHeader = TRUE,width=350,
+                         title = "Pico de Casos en el pais",status="warning",solidHeader = TRUE,width=350,
                          plotOutput("test33")
                      ),
-                     box(title = "Maximo de Muertes",status="danger",solidHeader = TRUE,width=350,
+                     box(title = "Pico de Muertes en el pais",status="danger",solidHeader = TRUE,width=350,
                          plotOutput("test32")
                        
                      )
@@ -166,19 +201,19 @@ server <- function(input, output, session) {
   # CAMBIO SEGUN DIARIO/TOTAL | INFECTADOS/MUERTES
   casos3<- reactive(if(input$tipo=="Total" && input$tipo2=="Infectados"){
     casos2() %>% 
-      summarise("Casos"=sum(PEOPLE_POSITIVE_CASES_COUNT))  
+      summarise("Casos"=sum(PEOPLE_POSITIVE_CASES_COUNT)/1000000)  
     
   }else if(input$tipo=="Diario" && input$tipo2=="Infectados"){
     casos2() %>% 
-      summarise("Casos"=sum(PEOPLE_POSITIVE_NEW_CASES_COUNT)) 
+      summarise("Casos"=sum(PEOPLE_POSITIVE_NEW_CASES_COUNT)/1000000) 
     
   }else if(input$tipo=="Total" && input$tipo2=="Muertes"){
     casos2() %>% 
-      summarise("Casos"=sum(PEOPLE_DEATH_COUNT))
+      summarise("Casos"=sum(PEOPLE_DEATH_COUNT)/1000)
     
   }else{
     casos2() %>% 
-      summarise("Casos"=sum(PEOPLE_DEATH_NEW_COUNT))
+      summarise("Casos"=sum(PEOPLE_DEATH_NEW_COUNT)/1000)
   }
   )
   
@@ -203,12 +238,12 @@ server <- function(input, output, session) {
   
   graf<-reactive(
     if(input$tipo2=="Muertes"){
-      graf2()+labs(fill="Muertes")+
+      graf2()+labs(fill="Muertes (Miles)")+
         scale_fill_gradientn(colours = c("#f7e6e6","#bf3e3e","#340404"),
                              na.value = "grey50",label=comma
         )
     }else{
-      graf2()+labs(fill="Infectados")+
+      graf2()+labs(fill="Infectados (Millones)")+
         scale_fill_gradientn(colours = c("#f0ebd4","#b89d2c","#5c4e16"),
                              na.value = "grey50",label=comma
         )
