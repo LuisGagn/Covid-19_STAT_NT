@@ -51,29 +51,31 @@ Se busca el analisis del efecto en la poblacion del virus COVID-19 y la respuest
 EL COVID-19 nos ha afectado de gran manera en estos años, empezando a fines del 2019 con una infeccion en China generando la pandemia a nivel global que nos afecta hasta el dia de hoy.  
 Es un virus muy grave que afecta las vias respiratorias de la persona y en mayor manera a la poblacion de mayor edad y/o con enfermedades respiratorias o pobres condiciones fisicas.  
 
-¿Como ha sido la evolución de Coronavirus en la región? ¿Cuando fue el pico de muertes en Uruguay? ¿Es Uruguay el país en la situación más crítica en la actualidad?¿Han sido las vacunas un impacto significativo en la reducción de casos? Estas sos preguntas que pueden surgir naturalmente cuando tratamos en el tema del Covid-19.
+¿Como ha sido la evolución de Coronavirus en la región? ¿Cuando fue el pico de muertes en Uruguay? ¿Es Uruguay el país en la situación más crítica en la actualidad?¿Han sido las vacunas un impacto significativo en la reducción de casos? Estas son preguntas que pueden surgir naturalmente cuando tratamos en el tema del Covid-19.
 
 Para responder esto, hay diversas fuentes de datos que permiten un relevamiento de toda la información. En nuestro caso, trabajaremos sobre un conjunto de datos actualizados de *data.wolrd*, los cuales tienen el recuento de casos positivos, nuevos, recuento de personas fallecidas y por día, para todos los paises del mundo. A su vez, trabajaremos con los datos de las vacunas en Uruguay, tomados del [repositorio de 3dgiordano](https://github.com/3dgiordano/covid-19-uy-vacc-data/blob/main/data/Uruguay.csv) los cuales se actualizan dia a dia con una gran informacion.
 
 A partir de ellos, pretendemos dar respuesta a estas interrogantes, analizando de manera descriptiva los datos hasta el momento, aplicando las diversas técnicas aprendidas durante el curso.
 
+\newpage
+
 ## Datos
 
 ```{r, echo=FALSE, include=FALSE}
-cgd <- read_csv("COVID-19 Activity.csv")
+Datos <- read_csv("COVID-19 Activity.csv")
 vacunacion <- read.csv("https://raw.githubusercontent.com/3dgiordano/covid-19-uy-vacc-data/main/data/Uruguay.csv")
 #Manipulacion
-str(cgd)
-colnames(cgd) = c("PEOPLE_POSITIVE_CASES_COUNT", "COUNTY_NAME","PROVINCE_STATE_NAME","REPORT_DATE" ,"CONTINENT_NAME","DATA_SOURCE_NAME",
+str(Datos)
+colnames(Datos) = c("PEOPLE_POSITIVE_CASES_COUNT", "COUNTY_NAME","PROVINCE_STATE_NAME","REPORT_DATE" ,"CONTINENT_NAME","DATA_SOURCE_NAME",
                     "PEOPLE_DEATH_NEW_COUNT","COUNTY_FIPS_NUMBER","COUNTRY_ALPHA_3_CODE",
                     "COUNTRY","COUNTRY_ALPHA_2_CODE","PEOPLE_POSITIVE_NEW_CASES_COUNT", "PEOPLE_DEATH_COUNT")
 
-cgd$COUNTRY <- factor(cgd$COUNTRY)
-cgd$REPORT_DATE <- as.Date(cgd$REPORT_DATE, format = "%y/%m/%d")
+Datos$COUNTRY <- factor(Datos$COUNTRY)
+Datos$REPORT_DATE <- as.Date(Datos$REPORT_DATE, format = "%y/%m/%d")
 
 vacunacion$date <- as.Date(vacunacion$date)
 
-Datos_Region <- cgd %>% 
+Datos_Region <- Datos %>% 
   filter(CONTINENT_NAME == "America") %>% 
   group_by(COUNTRY) %>%
   filter(COUNTRY == c("Uruguay", "Argentina", "Brazil", "Paraguay", "Chile", "Venezuela", "Peru", "Colombia", "Ecuador")) %>% 
@@ -93,68 +95,38 @@ La base de datos con la que trabajaremos contiene información del Covid-19 a pa
 - Cantidad de fallecimientos
 - Cantidad de fallecimientos por día
 
-Como primer acercamiento hacia los datos, se presenta la siguiene tabla la cuál resume la cantidad de personas contagiadas por el Covid-19 y el número de fallecimientos por continente desde el 21 de Enero de 2020 hasta el 17 de Junio de 2021.
+Como primer acercamiento hacia los datos, se presenta la siguiene tabla como resumen primario del efecto de la epidemia sobre todos los continentes. 
 
 
-```{r, echo=FALSE, results='asis', fig.pos = 'H', fig.cap='Resumen de contagios y fallecidos por continente.\\label{t1}'}
-cgd %>% 
+```{r, echo=FALSE, results='asis', resize.height=1,resize.width=1, fig.pos = 'H', fig.cap='Resumen de contagios y fallecidos por continente.\\label{t1}'}
+Datos %>% 
   group_by(CONTINENT_NAME) %>% 
   summarise("Personas contagiadas" = sum(PEOPLE_POSITIVE_NEW_CASES_COUNT),
             "Personas fallecidas" = sum(PEOPLE_DEATH_NEW_COUNT)) %>%
-  arrange("Personas contagiadas")%>%
-  xtable(caption = "Cantidad de personas contagiadas por continente") %>%
+  arrange("Personas contagiadas")%>% 
+  mutate(Total_Pob_2020 = c("1320","1098M","4701","801M","40M",0),
+         Porc_Muertes = c(0.0104,0.169,0.0158,0.138,0.00311,0)) %>% 
+  xtable(caption = "Resumen del efecto de la epidemia por continente") %>%
   
   print(caption.placement = 'top', include.rownames = FALSE, comment=FALSE)
 ```
-### Evolución del Covid-19 en Uruguay
 
-Si nos centramos en nuestro país, el primer contagio se da el 12 de Marzo de 2020.
-
-
-```{r, echo=FALSE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y fallecidos por Covid-19 en Uruguay.\\label{f1}'}
-
-datos_UY_Por_Fecha <- cgd %>% filter(COUNTRY == "Uruguay") %>% 
-  select(REPORT_DATE, starts_with("People_")) %>% 
-  arrange(REPORT_DATE)
-
-fig1<- datos_UY_Por_Fecha %>% ggplot() + 
-  geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Casos nuevos")) +
-  geom_line(aes(x=REPORT_DATE, y=PEOPLE_DEATH_COUNT, color = "Fallecidos")) +
-  geom_vline(aes(xintercept= ymd("2021-02-27"),color="Comienzo de vacunación"), linetype="dashed", size= 1)+
-  labs(x= "Fecha", y = "Cantidad de personas") + 
-  theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 8),
-        legend.position = "bottom") + scale_colour_brewer(palette = "Dark2") +
-  guides(color=guide_legend(""))
-print(fig1)
-```
+Concentrándonos en la relación entre muertes y cantidad de habitantes por continente, se observa que el más afectado hasta el momento ha sido América, donde la cantidad de personas fallecidas representan el 0,169% de su población aproximadamente, seguido por  Europa con un 0,138%. El continente menos afectado por la pandemia considerando el porcentaje de fallecidos sobre su población es Oceanía.
 
 ### Analisis por cohortes para America
 
-En esta sección trabajaremos con los datos segmentados de acuerdo a la fecha de primer contagio por país. 
-
-```{r, echo=FALSE, results='asis', fig.pos = 'H', fig.cap='Fecha de primer contagio por país.\\label{t2}'}
-primer_contagio <- cgd %>% 
-  filter(CONTINENT_NAME == "America") %>% 
-  group_by(COUNTRY) %>% 
-  filter(PEOPLE_POSITIVE_CASES_COUNT >0) %>% 
-  summarise(Primer_Contagio = ymd(min(REPORT_DATE)-1)) %>% 
-  arrange(Primer_Contagio) %>% 
-  xtable(caption = "Cantidad de personas contagiadas por continente") %>%
-  
-  print(caption.placement = 'top', include.rownames = FALSE, comment=FALSE)
-```
-
+Profundizando en el impacto de la epidemia en nuestro continente, trabajaremos con los datos segmentados de acuerdo a la fecha de primer contagio por país.
 
 ```{r,message=FALSE, echo=FALSE}
 #Visualizo por pais la fecha de primer contagio
-primer_contagio <- cgd %>% 
+primer_contagio <- Datos %>% 
   filter(CONTINENT_NAME == "America") %>% 
   group_by(COUNTRY) %>% 
   filter(PEOPLE_POSITIVE_CASES_COUNT >0) %>% 
   summarise(Primer_Contagio = ymd(min(REPORT_DATE)-1)) %>% 
   arrange(Primer_Contagio)
 
-Datos_Primer_Contagio <- cgd %>% 
+Datos_Primer_Contagio <- Datos %>% 
   inner_join(primer_contagio, by = "COUNTRY") %>% 
   mutate(Dias_Desde_Primer_Contagio = as.numeric(REPORT_DATE - Primer_Contagio)) %>% 
   filter(Dias_Desde_Primer_Contagio >=0) %>% 
@@ -167,7 +139,11 @@ Datos_Primer_Contagio <- cgd %>%
 
 ```{r, echo=FALSE, fig.pos = 'H', fig.cap='Evolución de la epidemia desde el primer día de contagio por país. Se puede observar claramente que en Estados Unidos y Brasil la ola de contagios fue notoriamente superior a los restantes paises del continente.\\label{f2}'}
 paises<-c("United States", "Brazil", "Uruguay")
-maximos<- Datos_Primer_Contagio%>%filter(COUNTRY %in% paises)%>%select(COUNTRY,Dias_Desde_Primer_Contagio,Casos_Confirmados_Acumulados)%>%group_by(COUNTRY) %>% summarise(maximo=max(Casos_Confirmados_Acumulados))
+maximos<- Datos_Primer_Contagio %>%
+  filter(COUNTRY %in% paises) %>%
+  select(COUNTRY,Dias_Desde_Primer_Contagio,Casos_Confirmados_Acumulados) %>%
+  group_by(COUNTRY) %>% 
+  summarise(maximo=max(Casos_Confirmados_Acumulados))
 
 
 fig2 <- Datos_Primer_Contagio %>% 
@@ -182,9 +158,11 @@ fig2 <- Datos_Primer_Contagio %>%
 print(fig2)
 ```
 
+Se puede apreciar que a partir de los 100 días desde el primer contagio, el comportamiento de la pandemia comienza a mostrar diferencias de acuerdo a cada país. Esto se vío afectado por las diferentes decisiones políticas tomadas por cada gobierno para combatir la epidemia del Covid-19.
 
+A continuación se presenta el siguiente panel con los países de la región, en donde se observa la evolución de nuevos contagios y personas fallecidas.
 
-```{r, echo=FALSE,message=FALSE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y personas fallecidas en los paises de la región.\\label{f3}'}
+```{r, echo=FALSE,message=FALSE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y personas fallecidas en los paises de la región.\\label{f2}', warning=FALSE}
 fig3 <- Datos_Region %>% ggplot() + 
   geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Nuevos casos positivos")) +
   geom_line(aes(x=REPORT_DATE, y=PEOPLE_DEATH_COUNT, color = "Cantidad de personas fallecidas")) + 
@@ -196,6 +174,43 @@ fig3 <- Datos_Region %>% ggplot() +
 
 print(fig3)
 ```
+
+Uno de los principales indicadores de la epidemiología es la Tasa de Letalidad la cual se define como el cociente entre la cantidad de personas fallecidas a causa de una determinada enfermedad en un período de tiempo y el número de las personas afectadas por esa misma enfermedad en ese mismo período. En nuestro caso, nos permitirá comparar el efecto del Covid-19 para los paises de América.
+
+```{r, echo=FALSE,message=FALSE, fig.pos = 'H', fig.cap='Evolución de la Tasa de Letalidad en los paises de la región.\\label{f3}'}
+fig4 <- Datos_Primer_Contagio %>% 
+    mutate(Tasa_de_Letalidad = (Fallecimientos_Acumulados/Casos_Confirmados_Acumulados)*100) %>% 
+    ggplot(aes(x= Dias_Desde_Primer_Contagio, y=Tasa_de_Letalidad)) +
+    geom_line(aes(col=COUNTRY)) + 
+    theme(legend.position = "none") +
+    labs(x = "Dias desde el primer contagio", y = "Tasa de letalidad")+
+    scale_y_continuous(labels=comma) + scale_fill_brewer(palette = "Dark2")
+print(fig4)
+```
+
+Los paises ubicados en centro américa fueron los que mayoritariamente presentaron una tasa muy elevada desde el primer día que tuvieron alguna persona infectada. Perú, Guayana e Islas Caymán llegaron a presentar un 100% de Tasa de Letalidad. A su vez, Perú es quien tiene mayor Tasa de Letalidad promedio con un valor de 11,2%; seguido con México con 9,49%. Brasil y Estados Unidos que han sido los paises con con mayor cantidad de personas contagiadas, presentan un promedio en la Tasa de Letalidad de 3,4% y 2,92% respectivamente. Uruguay, presenta un promedio de 1,82% y su máximo valor fue 3.160920% y se presentó el 18 de Julio de 2020.
+
+### Evolución del Covid-19 en Uruguay
+
+Si nos centramos en nuestro país, el primer contagio se da el 12 de Marzo de 2020.
+
+```{r, echo=FALSE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y fallecidos por Covid-19 en Uruguay.\\label{f1}'}
+
+datos_UY_Por_Fecha <- Datos %>% filter(COUNTRY == "Uruguay") %>% 
+  select(REPORT_DATE, starts_with("People_")) %>% 
+  arrange(REPORT_DATE)
+
+fig1<- datos_UY_Por_Fecha %>% ggplot() + 
+  geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Casos nuevos")) +
+  geom_line(aes(x=REPORT_DATE, y=PEOPLE_DEATH_COUNT, color = "Fallecidos")) +
+  geom_vline(aes(xintercept= ymd("2021-02-27"),color="Comienzo de vacunación"), linetype="dashed", size= 1)+
+  labs(x= "Fecha", y = "Cantidad de personas") + 
+  theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 8),
+        legend.position = "bottom") + scale_colour_brewer(palette = "Dark2") +
+  guides(color=guide_legend(""))
+print(fig1)
+```
+
 
 ### Analisis Vacunatorio en Uruguay
 
@@ -243,7 +258,7 @@ Esto es algo que puede verse en la Shiny, aun asi, podemos observar como la vacu
   
 
 ```{r, echo=FALSE, fig.pos="H", fig.cap="Efecto de la vacunacion en infecciones"}
-    UY<-cgd %>% filter(COUNTRY=="Uruguay")
+    UY<-Datos %>% filter(COUNTRY=="Uruguay")
    
   
   maximo<-UY%>%filter(PEOPLE_POSITIVE_NEW_CASES_COUNT==max(PEOPLE_POSITIVE_NEW_CASES_COUNT))
@@ -287,7 +302,39 @@ Esto es algo que puede verse en la Shiny, aun asi, podemos observar como la vacu
 
   
 ```
+
 Podemos notar que el pico de muertes e infecciones es en el mismo dia, sin embargo, vemos como la vacuna tiene un efecto importante contra la mortalidad del virus COVID-19 reduciendo la mortalidad de esta drasticamente en cambio, la infeccion aun se mantiene de manera "constante" 
+
+Esto lo podemos comprobar analizando la correclación entre el *índice de personas totalmente vacunadas* y la *Tasa de Letalidad*, la cual nos da un valor de 0.9780337, lo que manifiesta una relación positiva casi perfecta. 
+Cabe destacar, que el pico de la *Tasa de Letalidad* ocurrió en 2020-07-18, con un valor de 3.160920. Para el momento en que comenzó la vacunación, que fue el día 2021-02-27, esta tasa era del 1.0512186.
+
+
+
+```{r, echo=FALSE, fig.pos = 'H', fig.cap='Diagrama de dispersión entre la Tasa de Letalidad y el Indice de personas totalmente vacunadas en Uruguay.\\label{f5}'}
+Datos_Pro_Uy_Por_Fecha <- datos_UY_Por_Fecha %>% 
+    mutate(Tasa_de_Letalidad = (PEOPLE_DEATH_COUNT/PEOPLE_POSITIVE_CASES_COUNT )*100) 
+
+Tasa_de_Letalidad_Uy_Por_Fecha <- Datos_Pro_Uy_Por_Fecha %>% 
+    select(REPORT_DATE ,Tasa_de_Letalidad)
+
+indicefv <- Uruguay_Vacunas %>%   
+  select(date ,indicefv)
+  
+datos_cov <- left_join(Tasa_de_Letalidad_Uy_Por_Fecha,indicefv, by = c("REPORT_DATE" = "date"))  
+datos_cov_pro <- datos_cov %>% 
+  filter(REPORT_DATE > "2021-02-26")
+
+cor(datos_cov_pro$Tasa_de_Letalidad, datos_cov_pro$indicefv)
+
+fig5 <- datos_cov_pro %>% 
+  ggplot(aes(x=indicefv, y= Tasa_de_Letalidad))+
+  geom_point()+ theme(aspect.ratio = 1)+
+  labs(x="Indice de personas totalmente vacunadas", y="Tasa de Letalidad")
+  
+print(fig5)
+  
+```
+
 
 
 
