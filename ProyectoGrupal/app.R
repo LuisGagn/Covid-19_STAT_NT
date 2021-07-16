@@ -19,10 +19,11 @@ library(ggplot2)
 library(ggiraph)
 library(dygraphs)
 library(xts)
+library(plotly)   
 
 
 #Datos<-read.csv("https://query.data.world/s/25w3mrdsnje6zupnls5pajt3ruf6in", header=TRUE, stringsAsFactors=FALSE);     # DATOS ACTUALIZABLES DIA A DIA
-Datos<- read.csv("COVID.csv")
+Datos<- read.csv("RMD/COVID-19 Activity.csv")
 vacunacion<- read.csv("https://raw.githubusercontent.com/3dgiordano/covid-19-uy-vacc-data/main/data/Uruguay.csv")
 world <- ne_countries(scale = "medium", returnclass = "sf")
 
@@ -121,10 +122,10 @@ contenido <- dashboardBody(
                      fluidRow(
                      box(
                          title = "Pico de Casos en el pais",status="warning",solidHeader = TRUE,width=350,
-                         plotOutput("test33")
+                         plotlyOutput("test33")
                      ),
                      box(title = "Pico de Muertes en el pais",status="danger",solidHeader = TRUE,width=350,
-                         plotOutput("test32")
+                         plotlyOutput("test32")
                        
                      )
                      )
@@ -133,7 +134,7 @@ contenido <- dashboardBody(
                        fluidRow(
                          box(
                            title = "Efectos de la Vacunacion",status="success",solidHeader = TRUE,width=350,
-                           plotOutput("vacunacion2")
+                           plotlyOutput("vacunacion2")
                          )
                        )
                        
@@ -362,9 +363,9 @@ server <- function(input, output, session) {
   output$tabla <- DT::renderDataTable({casos()})
   
   output$vacunas<- renderDygraph({dyg()})
-  output$test33<- renderPlot({test2()})
-  output$test32<- renderPlot({test21()})
-  output$vacunacion2<-renderPlot({fig1()})
+  output$test33<- renderPlotly({test2()})
+  output$test32<- renderPlotly({test21()})
+  output$vacunacion2<-renderPlotly({fig1()})
 }
 
 

@@ -18,7 +18,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, echo=FALSE, include = FALSE, message=FALSE}
+
 library(tidyverse)
+library(grid)
 library(readr)
 library(here)
 library(dplyr)
@@ -39,13 +41,27 @@ library(maps)
 library(data.table)
 library(scales)
 library(xtable)
+library(gridExtra)
 ```
+
+
+
+![](Udelar.png){width=50%}
+
+
+# Nuevas Tecnologías para el análisis estadístico de datos 
+
+## Docentes:
+
+- Natalia Da Silva
+- Federico Molina 
+
+\newpage
 
 ## Resumen
 
-El siguiente trabajo tiene como objetivo la presentación del proyecto final del curso *Nuevas Tecnologías para el análisis estadístico de datos* del año 2021. A lo largo del mismo, se aplicarán distintas herramientas computacionales aprendidas en el curso para realizar un análisis exploratorio del Covid-19. Para su aplicación, se hará uso del software Rstudio, realizando una aplicación web Shiny, siendo reporoducible y disponible para su uso en GitHub.  
-Se busca el analisis del efecto en la poblacion del virus COVID-19 y la respuesta de la vacunacion contra el mismo.  
-
+El siguiente trabajo tiene como objetivo la presentación del proyecto final del curso *Nuevas Tecnologías para el análisis estadístico de datos* del año 2021. A lo largo del mismo, se aplicarán distintas técnicas de investigación mediante herramientas computacionales aprendidas en el curso para realizar un análisis exploratorio del Covid-19. Se hará énfasis en la evolución de la epidemia en la región y principalmente en Uruguay, profundizaremos en indicadores como la Tasa de Letalidad y estudiaremos el efecto que ha tenido la vacunación de nuestra población, entre otros puntos. Para esto, se hará uso del software Rstudio, realizando una aplicación web Shiny, siendo reporoducible y disponible para su uso en GitHub.  
+ 
 ## Introducción
 
 EL COVID-19 nos ha afectado de gran manera en estos años, empezando a fines del 2019 con una infeccion en China generando la pandemia a nivel global que nos afecta hasta el dia de hoy.  
@@ -81,11 +97,15 @@ Datos_Region <- Datos %>%
   filter(COUNTRY == c("Uruguay", "Argentina", "Brazil", "Paraguay", "Chile", "Venezuela", "Peru", "Colombia", "Ecuador")) %>% 
   select(REPORT_DATE, starts_with("People_")) %>% 
   arrange(REPORT_DATE)
+
+datos_UY_Por_Fecha <- Datos %>% filter(COUNTRY == "Uruguay") %>% 
+  select(REPORT_DATE, starts_with("People_")) %>% 
+  arrange(REPORT_DATE)
 ```
 
 ## Análisis exploratorio de los datos
 
-La base de datos con la que trabajaremos contiene información del Covid-19 a partir el 21 de Enero de 2020. Para nuestro análisis, las variables que consideraremos relevantes son:
+La base de datos con la que trabajaremos contiene información del Covid-19 a partir el 21 de Enero de 2020. Para nuestro análisis, las variables que consideraremos son:
 
 - País
 - Continente
@@ -95,7 +115,11 @@ La base de datos con la que trabajaremos contiene información del Covid-19 a pa
 - Cantidad de fallecimientos
 - Cantidad de fallecimientos por día
 
-Como primer acercamiento hacia los datos, se presenta la siguiene tabla como resumen primario del efecto de la epidemia sobre todos los continentes. 
+
+La pandemia de Covid-19 ha impactado a nivel mundial en mayor o menor grado, pero hasta la fecha, son más de `r print(paste(Datos %>% group_by(COUNTRY) %>% summarise(n=n())))` países y territorios del mundo afectados y más de `r print(paste(Datos %>% summarise(n = sum(PEOPLE_DEATH_NEW_COUNT))))` personas fallecidas.
+
+
+Como primer acercamiento hacia los datos que trabajaremos, se presenta la siguiente tabla como resumen del efecto de la epidemia sobre todos los continentes. 
 
 
 ```{r, echo=FALSE, results='asis', resize.height=1,resize.width=1, fig.pos = 'H', fig.cap='Resumen de contagios y fallecidos por continente.\\label{t1}'}
@@ -112,6 +136,8 @@ Datos %>%
 ```
 
 Concentrándonos en la relación entre muertes y cantidad de habitantes por continente, se observa que el más afectado hasta el momento ha sido América, donde la cantidad de personas fallecidas representan el 0,169% de su población aproximadamente, seguido por  Europa con un 0,138%. El continente menos afectado por la pandemia considerando el porcentaje de fallecidos sobre su población es Oceanía.
+
+\newpage
 
 ### Analisis por cohortes para America
 
@@ -162,7 +188,7 @@ Se puede apreciar que a partir de los 100 días desde el primer contagio, el com
 
 A continuación se presenta el siguiente panel con los países de la región, en donde se observa la evolución de nuevos contagios y personas fallecidas.
 
-```{r, echo=FALSE,message=FALSE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y personas fallecidas en los paises de la región.\\label{f2}', warning=FALSE}
+```{r, echo=FALSE,message=FALSE,  warning=FALSE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y personas fallecidas en los paises de la región.\\label{f2}'}
 fig3 <- Datos_Region %>% ggplot() + 
   geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Nuevos casos positivos")) +
   geom_line(aes(x=REPORT_DATE, y=PEOPLE_DEATH_COUNT, color = "Cantidad de personas fallecidas")) + 
@@ -178,27 +204,27 @@ print(fig3)
 Uno de los principales indicadores de la epidemiología es la Tasa de Letalidad la cual se define como el cociente entre la cantidad de personas fallecidas a causa de una determinada enfermedad en un período de tiempo y el número de las personas afectadas por esa misma enfermedad en ese mismo período. En nuestro caso, nos permitirá comparar el efecto del Covid-19 para los paises de América.
 
 ```{r, echo=FALSE,message=FALSE, fig.pos = 'H', fig.cap='Evolución de la Tasa de Letalidad en los paises de la región.\\label{f3}'}
-fig4 <- Datos_Primer_Contagio %>% 
-    mutate(Tasa_de_Letalidad = (Fallecimientos_Acumulados/Casos_Confirmados_Acumulados)*100) %>% 
-    ggplot(aes(x= Dias_Desde_Primer_Contagio, y=Tasa_de_Letalidad)) +
-    geom_line(aes(col=COUNTRY)) + 
-    theme(legend.position = "none") +
-    labs(x = "Dias desde el primer contagio", y = "Tasa de letalidad")+
-    scale_y_continuous(labels=comma) + scale_fill_brewer(palette = "Dark2")
+fig4 <- Datos_Region %>% 
+   mutate(Tasa_de_Letalidad = (PEOPLE_DEATH_COUNT/PEOPLE_POSITIVE_CASES_COUNT )*100)  %>% 
+    ggplot(aes(x= REPORT_DATE , y=Tasa_de_Letalidad)) +
+    geom_point(aes(col=COUNTRY), alpha = 1/2) + 
+    theme(legend.position = "bottom",
+          axis.text.x = element_text(angle = 45, vjust=0.5, size = 6)) +
+    labs(x = "Dias desde el primer contagio", y = "Tasa de Letalidad")+
+    scale_y_continuous(labels=comma) + scale_fill_brewer(palette = "Dark2")+
+  scale_x_date(breaks = "3 weeks")
 print(fig4)
 ```
 
 Los paises ubicados en centro américa fueron los que mayoritariamente presentaron una tasa muy elevada desde el primer día que tuvieron alguna persona infectada. Perú, Guayana e Islas Caymán llegaron a presentar un 100% de Tasa de Letalidad. A su vez, Perú es quien tiene mayor Tasa de Letalidad promedio con un valor de 11,2%; seguido con México con 9,49%. Brasil y Estados Unidos que han sido los paises con con mayor cantidad de personas contagiadas, presentan un promedio en la Tasa de Letalidad de 3,4% y 2,92% respectivamente. Uruguay, presenta un promedio de 1,82% y su máximo valor fue 3.160920% y se presentó el 18 de Julio de 2020.
+
+
 
 ### Evolución del Covid-19 en Uruguay
 
 Si nos centramos en nuestro país, el primer contagio se da el 12 de Marzo de 2020.
 
 ```{r, echo=FALSE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y fallecidos por Covid-19 en Uruguay.\\label{f1}'}
-
-datos_UY_Por_Fecha <- Datos %>% filter(COUNTRY == "Uruguay") %>% 
-  select(REPORT_DATE, starts_with("People_")) %>% 
-  arrange(REPORT_DATE)
 
 fig1<- datos_UY_Por_Fecha %>% ggplot() + 
   geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Casos nuevos")) +
@@ -228,7 +254,8 @@ Uruguay_Vacunas<-vacunacion %>% select(date,total_vaccinations,people_vaccinated
   geom_line(aes(x=date,y=indicevp/100, group=1,color="Poblacion con almenos una dosis"), size=1.5)+
       scale_y_continuous(labels=scales::percent)+
     scale_color_manual(name="Indices",values=c("Poblacion con dos dosis"="#3FC600","Poblacion con almenos una dosis"="#DF7B0A"))+
-    theme(legend.position="bottom")+
+    theme(legend.position="bottom",
+          axis.text.x = element_text(angle = 45, vjust=0.5, size = 6))+
     labs(y="Porcentaje de vacunacion",x="Fecha")
 
   
@@ -251,44 +278,39 @@ Viendo la pandemia como un tema tan importante y relevante en nuestro bienestar,
 La inmunidad colectiva es un factor que se da al momento de que un porcentaje alto (Por lo general entre 80-95%(OMS)) de la poblacion esta vacunada contra dicha enfermedad y que en alrededor de 14 dias desde la fecha un porcentaje mayor de personas tendran las 2 dosis, tenemos la esperanza de estar en el 80% de vacunados en breve tiempo.
   
 
-### ¿Como fue el efecto de la vacunacion?
+### ¿Como ha sido efecto de la vacunacion?
 
-Esto es algo que puede verse en la Shiny, aun asi, podemos observar como la vacunacion ayuda a reducir velozmente la mortalidad de el COVID-19.  
+Los objetivos de la vacunación radican en reducir la morbolodad, mortalidad y letalidad asociada al Covid-19, la protección de la integridad de los sistemas de salud y de infraestructura de los servicios esenciales. 
+
+Esta investigación puede profundizarse en mayor grado mediante la Shiny, aun asi, podemos observar como la vacunación ayuda a reducir velozmente la mortalidad de el COVID-19.  
 
   
 
-```{r, echo=FALSE, fig.pos="H", fig.cap="Efecto de la vacunacion en infecciones"}
-    UY<-Datos %>% filter(COUNTRY=="Uruguay")
+```{r, echo=FALSE, fig.width=10, fig.height = 10, fig.pos="H", fig.cap="Efecto de la vacunación en los infectados diarios y personas fallecidas por día."}
+UY<-Datos %>% filter(COUNTRY=="Uruguay")
+
+maximo<-UY%>%filter(PEOPLE_POSITIVE_NEW_CASES_COUNT==max(PEOPLE_POSITIVE_NEW_CASES_COUNT))
    
-  
-  maximo<-UY%>%filter(PEOPLE_POSITIVE_NEW_CASES_COUNT==max(PEOPLE_POSITIVE_NEW_CASES_COUNT))
-   
-  
-  
-
-    ggplot(UY,aes(x=REPORT_DATE,y=PEOPLE_POSITIVE_NEW_CASES_COUNT))+
+vac_fig1 <- ggplot(UY,aes(x=REPORT_DATE,y=PEOPLE_POSITIVE_NEW_CASES_COUNT))+
     geom_line()+
       
       geom_point(aes(x=maximo$REPORT_DATE,y=maximo$PEOPLE_POSITIVE_NEW_CASES_COUNT),color="red")+
       
       geom_text(aes(x=maximo$REPORT_DATE,y=maximo$PEOPLE_POSITIVE_NEW_CASES_COUNT),
                 label=paste0(maximo$REPORT_DATE),color="red", vjust=-.5)+
-      labs(x="Fecha", y="Casos de infectados diarios")+
+      labs(x="Fecha", y="Infectados diarios")+
           geom_vline(aes(xintercept= ymd("2021-02-27"),color="Comienzo de vacunación"), linetype="dashed", size= 1)+
-      theme(legend.position = "bottom",legend.title = element_blank())+
-      geom_text(aes(x=ymd("2021-02-27"),y=0),label=paste0("2021-02-27"),color="#d95f02",vjust=1.5,hjust=1.1)
-```
-
-
-```{r, echo=FALSE, fig.pos="H", fig.cap="Efecto de la vacunacion en muertes"}
- 
-  maximo2<-
+      theme(legend.position = "",
+            legend.title = element_blank(), 
+            axis.text.y = element_text(size = 4),
+            axis.text.x = element_text(angle = 45, vjust=0.5, size = 6))+
+      scale_x_date(breaks = "2 weeks")+
+      geom_text(aes(x=ymd("2021-02-27"),y=6000),label=paste0("2021-02-27"),color="#d95f02",vjust=0.5,hjust=0.5)
+    
+maximo2<-
     UY%>%filter(PEOPLE_DEATH_NEW_COUNT==max(PEOPLE_DEATH_NEW_COUNT))
-  
-  
-  
- 
-    ggplot(UY,aes(x=REPORT_DATE,y=PEOPLE_DEATH_NEW_COUNT))+
+
+vac_fig2 <-ggplot(UY,aes(x=REPORT_DATE,y=PEOPLE_DEATH_NEW_COUNT))+
       geom_line()+
       
       geom_point(aes(x=maximo2$REPORT_DATE,y=maximo2$PEOPLE_DEATH_NEW_COUNT),color="red")+
@@ -297,11 +319,16 @@ Esto es algo que puede verse en la Shiny, aun asi, podemos observar como la vacu
                 label=paste0(maximo2$REPORT_DATE),color="red", vjust=-.5)+
       labs(x="Fecha", y="Muertes diarias")+  
       geom_vline(aes(xintercept= ymd("2021-02-27"),color="Comienzo de vacunación"), linetype="dashed", size= 1)+
-      theme(legend.position = "bottom",legend.title = element_blank())+
-      geom_text(aes(x=ymd("2021-02-27"),y=0),label=paste0("2021-02-27"),color="#d95f02",vjust=1,hjust=1.1)
-
-  
+      theme(legend.position = "bottom",
+            legend.title = element_blank(), 
+            axis.text.y = element_text(size = 4),
+            axis.text.x = element_text(angle = 45, vjust=0.5, size = 6))+
+      scale_x_date(breaks = "2 weeks")
+      #geom_text(aes(x=ymd("2021-02-27"),y=75),label=paste0("2021-02-27"),color="#d95f02",vjust=0.5,hjust=0.5)
+    
+grid.arrange(vac_fig1,vac_fig2) 
 ```
+
 
 Podemos notar que el pico de muertes e infecciones es en el mismo dia, sin embargo, vemos como la vacuna tiene un efecto importante contra la mortalidad del virus COVID-19 reduciendo la mortalidad de esta drasticamente en cambio, la infeccion aun se mantiene de manera "constante" 
 
@@ -310,7 +337,7 @@ Cabe destacar, que el pico de la *Tasa de Letalidad* ocurrió en 2020-07-18, con
 
 
 
-```{r, echo=FALSE, fig.pos = 'H', fig.cap='Diagrama de dispersión entre la Tasa de Letalidad y el Indice de personas totalmente vacunadas en Uruguay.\\label{f5}'}
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.pos = 'H', fig.cap='Diagrama de dispersión entre la Tasa de Letalidad y el Indice de personas totalmente vacunadas en Uruguay con modelado generalizado aditivo (GAM).\\label{f5}'}
 Datos_Pro_Uy_Por_Fecha <- datos_UY_Por_Fecha %>% 
     mutate(Tasa_de_Letalidad = (PEOPLE_DEATH_COUNT/PEOPLE_POSITIVE_CASES_COUNT )*100) 
 
@@ -329,7 +356,8 @@ cor(datos_cov_pro$Tasa_de_Letalidad, datos_cov_pro$indicefv)
 fig5 <- datos_cov_pro %>% 
   ggplot(aes(x=indicefv, y= Tasa_de_Letalidad))+
   geom_point()+ theme(aspect.ratio = 1)+
-  labs(x="Indice de personas totalmente vacunadas", y="Tasa de Letalidad")
+  labs(x="Indice de personas totalmente vacunadas", y="Tasa de Letalidad")+
+  geom_smooth(method = "gam")
   
 print(fig5)
   
@@ -353,3 +381,5 @@ La aplicacion utiliza:
 
 
 ## Conclusiones
+
+
