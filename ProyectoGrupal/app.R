@@ -12,6 +12,7 @@ library(rnaturalearthdata)
 library(lubridate)
 library(DT)
 library(tidyverse)
+library(readr)
 
 # Graficos
 library(scales)
@@ -22,8 +23,8 @@ library(xts)
 library(plotly)   
 
 
-#Datos<-read.csv("https://query.data.world/s/25w3mrdsnje6zupnls5pajt3ruf6in", header=TRUE, stringsAsFactors=FALSE);     # DATOS ACTUALIZABLES DIA A DIA
-Datos<- read.csv("RMD/COVID-19 Activity.csv")
+
+Datos<- read_csv("../RMD/COVID-19 Activity.zip")
 vacunacion<- read.csv("https://raw.githubusercontent.com/3dgiordano/covid-19-uy-vacc-data/main/data/Uruguay.csv")
 world <- ne_countries(scale = "medium", returnclass = "sf")
 
