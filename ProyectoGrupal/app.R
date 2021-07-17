@@ -7,6 +7,7 @@ library(shinydashboard)
 library(sf)
 library(rnaturalearth)
 library(rnaturalearthdata)
+library(rgeos)
 
 # Manejo Data
 library(lubridate)

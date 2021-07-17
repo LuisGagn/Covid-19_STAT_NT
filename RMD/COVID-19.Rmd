@@ -78,8 +78,9 @@ A partir de ellos, pretendemos dar respuesta a estas interrogantes, analizando d
 ## Datos
 
 ```{r, echo=FALSE, include=FALSE}
-Datos <- read_csv("COVID-19 Activity.csv")
+Datos <- read_csv("COVID-19 Activity.zip")
 vacunacion <- read.csv("https://raw.githubusercontent.com/3dgiordano/covid-19-uy-vacc-data/main/data/Uruguay.csv")
+poblacion<- read_csv("Population2019.csv")
 #Manipulacion
 str(Datos)
 colnames(Datos) = c("PEOPLE_POSITIVE_CASES_COUNT", "COUNTY_NAME","PROVINCE_STATE_NAME","REPORT_DATE" ,"CONTINENT_NAME","DATA_SOURCE_NAME",
@@ -188,17 +189,33 @@ Se puede apreciar que a partir de los 100 días desde el primer contagio, el com
 
 A continuación se presenta el siguiente panel con los países de la región, en donde se observa la evolución de nuevos contagios y personas fallecidas.
 
-```{r, echo=FALSE,message=FALSE,  warning=FALSE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y personas fallecidas en los paises de la región.\\label{f2}'}
-fig3 <- Datos_Region %>% ggplot() + 
-  geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Nuevos casos positivos")) +
-  geom_line(aes(x=REPORT_DATE, y=PEOPLE_DEATH_COUNT, color = "Cantidad de personas fallecidas")) + 
-  facet_wrap(~COUNTRY) + 
-  labs(x = "Fecha", y = "Cantidad de personas") +
+```{r, echo=FALSE,message=FALSE,  warning=FALSE, fig.pos = 'H', fig.cap='Tasas de contagio y personas fallecidas en la region\\label{f2}'}
+
+popregion<- poblacion %>% filter(Time==2020)%>% select(Location,PopTotal,Time)%>%merge(Datos_Region, by.x="Location", by.y="COUNTRY")%>%
+            group_by(Location)%>%summarise(infeccion=round((PEOPLE_POSITIVE_CASES_COUNT/(PopTotal*1000)),digits=2), REPORT_DATE,letal=round((PEOPLE_DEATH_COUNT/PEOPLE_POSITIVE_CASES_COUNT),digits=2))
+
+popregion %>% ggplot() + 
+  geom_line(aes(x=REPORT_DATE, y=infeccion, color = "Tasa de infeccion")) +
+  geom_line(aes(x=REPORT_DATE, y=letal, color = "Letalidad")) + 
+  facet_wrap(~Location) + 
+  labs(x = "Fecha", y = "Porcentaje afectado") +
   theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 6),
         legend.position = "bottom", legend.title = element_blank()) + scale_colour_brewer(palette = "Dark2")+
-  scale_y_continuous(labels=comma) 
+  scale_y_continuous(labels=scales::percent_format(accuracy = 10))
 
-print(fig3)
+
+
+
+#fig3 <- Datos_Region %>% ggplot() + 
+ # geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Nuevos casos positivos")) +
+  #geom_line(aes(x=REPORT_DATE, y=PEOPLE_DEATH_COUNT, color = "Cantidad de personas fallecidas")) + 
+#  facet_wrap(~COUNTRY) + 
+#  labs(x = "Fecha", y = "Cantidad de personas") +
+#  theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 6),
+#        legend.position = "bottom", legend.title = element_blank()) + scale_colour_brewer(palette = "Dark2")+
+#  scale_y_continuous(labels=comma) 
+
+#print(fig3)
 ```
 
 Uno de los principales indicadores de la epidemiología es la Tasa de Letalidad la cual se define como el cociente entre la cantidad de personas fallecidas a causa de una determinada enfermedad en un período de tiempo y el número de las personas afectadas por esa misma enfermedad en ese mismo período. En nuestro caso, nos permitirá comparar el efecto del Covid-19 para los paises de América.
