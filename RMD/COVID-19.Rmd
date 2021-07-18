@@ -42,6 +42,11 @@ library(data.table)
 library(scales)
 library(xtable)
 library(gridExtra)
+
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(rgeos)
 ```
 
 
@@ -67,7 +72,7 @@ El siguiente trabajo tiene como objetivo la presentación del proyecto final del
 EL COVID-19 nos ha afectado de gran manera en estos años, empezando a fines del 2019 con una infeccion en China generando la pandemia a nivel global que nos afecta hasta el dia de hoy.  
 Es un virus muy grave que afecta las vias respiratorias de la persona y en mayor manera a la poblacion de mayor edad y/o con enfermedades respiratorias o pobres condiciones fisicas.  
 
-¿Como ha sido la evolución de Coronavirus en la región? ¿Cuando fue el pico de muertes en Uruguay? ¿Es Uruguay el país en la situación más crítica en la actualidad?¿Han sido las vacunas un impacto significativo en la reducción de casos? Estas son preguntas que pueden surgir naturalmente cuando tratamos en el tema del Covid-19.
+¿Como ha sido la evolución de Coronavirus en la región? ¿Cuando fue el pico de muertes en Uruguay? ¿Es Uruguay el país en la situación más crítica en la actualidad?¿Han tenido las vacunas un impacto positivo en la reducción de casos? Estas son preguntas que pueden surgir naturalmente cuando tratamos en el tema del Covid-19.
 
 Para responder esto, hay diversas fuentes de datos que permiten un relevamiento de toda la información. En nuestro caso, trabajaremos sobre un conjunto de datos actualizados de *data.wolrd*, los cuales tienen el recuento de casos positivos, nuevos, recuento de personas fallecidas y por día, para todos los paises del mundo. A su vez, trabajaremos con los datos de las vacunas en Uruguay, tomados del [repositorio de 3dgiordano](https://github.com/3dgiordano/covid-19-uy-vacc-data/blob/main/data/Uruguay.csv) los cuales se actualizan dia a dia con una gran informacion.
 
@@ -77,10 +82,11 @@ A partir de ellos, pretendemos dar respuesta a estas interrogantes, analizando d
 
 ## Datos
 
-```{r, echo=FALSE, include=FALSE}
-Datos <- read_csv("COVID-19 Activity.zip")
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+Datos <- read_csv("COVID-19 Activity.csv")
 vacunacion <- read.csv("https://raw.githubusercontent.com/3dgiordano/covid-19-uy-vacc-data/main/data/Uruguay.csv")
 poblacion<- read_csv("Population2019.csv")
+
 #Manipulacion
 str(Datos)
 colnames(Datos) = c("PEOPLE_POSITIVE_CASES_COUNT", "COUNTY_NAME","PROVINCE_STATE_NAME","REPORT_DATE" ,"CONTINENT_NAME","DATA_SOURCE_NAME",
@@ -102,6 +108,7 @@ Datos_Region <- Datos %>%
 datos_UY_Por_Fecha <- Datos %>% filter(COUNTRY == "Uruguay") %>% 
   select(REPORT_DATE, starts_with("People_")) %>% 
   arrange(REPORT_DATE)
+
 ```
 
 ## Análisis exploratorio de los datos
@@ -120,7 +127,7 @@ La base de datos con la que trabajaremos contiene información del Covid-19 a pa
 La pandemia de Covid-19 ha impactado a nivel mundial en mayor o menor grado, pero hasta la fecha, son más de `r print(paste(Datos %>% group_by(COUNTRY) %>% summarise(n=n())))` países y territorios del mundo afectados y más de `r print(paste(Datos %>% summarise(n = sum(PEOPLE_DEATH_NEW_COUNT))))` personas fallecidas.
 
 
-Como primer acercamiento hacia los datos que trabajaremos, se presenta la siguiente tabla como resumen del efecto de la epidemia sobre todos los continentes. 
+Como primer acercamiento hacia los datos que trabajaremos, se presenta la siguiente tabla a modo de resumen del efecto de la epidemia sobre los continentes. 
 
 
 ```{r, echo=FALSE, results='asis', resize.height=1,resize.width=1, fig.pos = 'H', fig.cap='Resumen de contagios y fallecidos por continente.\\label{t1}'}
@@ -140,9 +147,11 @@ Concentrándonos en la relación entre muertes y cantidad de habitantes por cont
 
 \newpage
 
-### Analisis por cohortes para America
+### Evolución de la epidema en América
 
-Profundizando en el impacto de la epidemia en nuestro continente, trabajaremos con los datos segmentados de acuerdo a la fecha de primer contagio por país.
+Los primeros registros de casos de Covid-19 se dan en Brasil y Chile el día el 29 de Febrero de 2020. El primer fallecido a causa del coronavirus se registra en Argentina, el 8 de Marzo del 2020, 4 días antes de que se registrara el primer caso en nuestro país.
+
+Profundizando en el impacto de la epidemia en nuestro continente, se hará un análisis por cohorte, en donde trabajaremos con los datos segmentados de acuerdo a la fecha de primer contagio por cada país.
 
 ```{r,message=FALSE, echo=FALSE}
 #Visualizo por pais la fecha de primer contagio
@@ -164,7 +173,7 @@ Datos_Primer_Contagio <- Datos %>%
             Fallecimientos_Acumulados = sum(PEOPLE_DEATH_COUNT))
 ```
 
-```{r, echo=FALSE, fig.pos = 'H', fig.cap='Evolución de la epidemia desde el primer día de contagio por país. Se puede observar claramente que en Estados Unidos y Brasil la ola de contagios fue notoriamente superior a los restantes paises del continente.\\label{f2}'}
+```{r, echo=FALSE, fig.pos = 'H', fig.cap='Evolución de la epidemia desde el primer día de contagio por país. Se puede observar claramente que en Estados Unidos y Brasil la ola de contagios fue notoriamente superior a los restantes paises del continente.\\label{f}'}
 paises<-c("United States", "Brazil", "Uruguay")
 maximos<- Datos_Primer_Contagio %>%
   filter(COUNTRY %in% paises) %>%
@@ -187,40 +196,41 @@ print(fig2)
 
 Se puede apreciar que a partir de los 100 días desde el primer contagio, el comportamiento de la pandemia comienza a mostrar diferencias de acuerdo a cada país. Esto se vío afectado por las diferentes decisiones políticas tomadas por cada gobierno para combatir la epidemia del Covid-19.
 
+Si bien este gráfico nos permite una visualización global a nivel de la región, es dificil poder sacar alguna conclusión respecto a la letalidad del virus en cada país dado la diferencia poblacional que hay entre los paises.
+
+
+Para poder realizar este tipo de comparación, uno de los principales indicadores de la epidemiología es la Tasa de Letalidad la cual se define como el cociente entre la cantidad de personas fallecidas a causa de una determinada enfermedad en un período de tiempo y el número de las personas afectadas por esa misma enfermedad en ese mismo período. En nuestro caso, nos permitirá comparar el efecto del Covid-19 para los paises de América.
+
+A su vez, otro indicador que permite comparar el efecto del Covid-19 entre los paises es la Tasa de Infectados, que se define como el cociente entre el número de personas afectadas a raís del coronavirus y la población total del país.
+
+Es preciso recordar, que el número de infecciones es un denominador altamente complejo, ya que es muy dificil estimar el total de casos infectados asintomáticos que no son registrados. En nuestro trabajo, nos centraremos únicamente en aquellos casos confirmados de Covid-19 que fueron registrados. 
+
 A continuación se presenta el siguiente panel con los países de la región, en donde se observa la evolución de nuevos contagios y personas fallecidas.
 
-```{r, echo=FALSE,message=FALSE,  warning=FALSE, fig.pos = 'H', fig.cap='Tasas de contagio y personas fallecidas en la region\\label{f2}'}
-
-popregion<- poblacion %>% filter(Time==2020)%>% select(Location,PopTotal,Time)%>%merge(Datos_Region, by.x="Location", by.y="COUNTRY")%>%
-            group_by(Location)%>%summarise(infeccion=round((PEOPLE_POSITIVE_CASES_COUNT/(PopTotal*1000)),digits=2), REPORT_DATE,letal=round((PEOPLE_DEATH_COUNT/PEOPLE_POSITIVE_CASES_COUNT),digits=2))
+```{r, echo=FALSE, message=FALSE,  warning=FALSE, fig.pos = 'H', fig.cap='Evolución de las Tasas de letalidad e infección. Se puede apreciar como el comprotamiento de la epidema ha sido heterogéneo entre los paises de la región. \\label{f}'}
+popregion <- poblacion %>% filter(Time==2020)%>% select(Location,PopTotal,Time)%>%merge(Datos_Region, by.x="Location", by.y="COUNTRY")%>%
+            group_by(Location)%>%
+            summarise(infeccion=round((PEOPLE_POSITIVE_CASES_COUNT/(PopTotal*1000)),digits=2), REPORT_DATE,letal=round((PEOPLE_DEATH_COUNT/PEOPLE_POSITIVE_CASES_COUNT),digits=2))
 
 popregion %>% ggplot() + 
-  geom_line(aes(x=REPORT_DATE, y=infeccion, color = "Tasa de infeccion")) +
-  geom_line(aes(x=REPORT_DATE, y=letal, color = "Letalidad")) + 
+  geom_line(aes(x=REPORT_DATE, y=infeccion, color = "Tasa de infección")) +
+  geom_line(aes(x=REPORT_DATE, y=letal, color = "Tasa de letalidad")) + 
   facet_wrap(~Location) + 
   labs(x = "Fecha", y = "Porcentaje afectado") +
   theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 6),
         legend.position = "bottom", legend.title = element_blank()) + scale_colour_brewer(palette = "Dark2")+
-  scale_y_continuous(labels=scales::percent_format(accuracy = 10))
-
-
-
-
-#fig3 <- Datos_Region %>% ggplot() + 
- # geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Nuevos casos positivos")) +
-  #geom_line(aes(x=REPORT_DATE, y=PEOPLE_DEATH_COUNT, color = "Cantidad de personas fallecidas")) + 
-#  facet_wrap(~COUNTRY) + 
-#  labs(x = "Fecha", y = "Cantidad de personas") +
-#  theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 6),
-#        legend.position = "bottom", legend.title = element_blank()) + scale_colour_brewer(palette = "Dark2")+
-#  scale_y_continuous(labels=comma) 
-
-#print(fig3)
+  scale_y_continuous(labels=scales::percent_format(accuracy = 5)) 
 ```
 
-Uno de los principales indicadores de la epidemiología es la Tasa de Letalidad la cual se define como el cociente entre la cantidad de personas fallecidas a causa de una determinada enfermedad en un período de tiempo y el número de las personas afectadas por esa misma enfermedad en ese mismo período. En nuestro caso, nos permitirá comparar el efecto del Covid-19 para los paises de América.
+A partir del panel podemos observar que Uruguay y Chile han sido los únicos paises que han mantenido por debajo del 5% la Tasa da de Letalidad del virus. 
 
-```{r, echo=FALSE,message=FALSE, fig.pos = 'H', fig.cap='Evolución de la Tasa de Letalidad en los paises de la región.\\label{f3}'}
+Actualmente, a excepción de Perú que aún tiene la Tasa de Letalidad por encima que la Tasa de Infeción, todos los paises de la región han logrado disminutir la letalidad y que su tasa quede por debajo de la tasa de infección.
+
+Podemos apreciar también como la Tasa de infección presenta una pronunciada tendencia de ascenso a nivel general en la región, siendo Uruguay quien actualmente presenta una mayor tasa de infección en la región.
+
+Centrándonos solo en la Tasa de Letalidad, se presenta a continuación un gráfico con la evolución de la misma en todos los paises de la región.
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE, fig.pos = 'H', fig.cap='Evolución de la Tasa de Letalidad en los paises de la región con modelado de regresión local (LOESS). Se aprecia como Perú y Ecuador han sido los paises de la región donde el virus del Covid-19 ha sido más letal.\\label{f}'}
 fig4 <- Datos_Region %>% 
    mutate(Tasa_de_Letalidad = (PEOPLE_DEATH_COUNT/PEOPLE_POSITIVE_CASES_COUNT )*100)  %>% 
     ggplot(aes(x= REPORT_DATE , y=Tasa_de_Letalidad)) +
@@ -229,19 +239,28 @@ fig4 <- Datos_Region %>%
           axis.text.x = element_text(angle = 45, vjust=0.5, size = 6)) +
     labs(x = "Dias desde el primer contagio", y = "Tasa de Letalidad")+
     scale_y_continuous(labels=comma) + scale_fill_brewer(palette = "Dark2")+
-  scale_x_date(breaks = "3 weeks")
+  scale_x_date(breaks = "3 weeks")+
+  geom_smooth(method = "loess")
 print(fig4)
 ```
 
-Los paises ubicados en centro américa fueron los que mayoritariamente presentaron una tasa muy elevada desde el primer día que tuvieron alguna persona infectada. Perú, Guayana e Islas Caymán llegaron a presentar un 100% de Tasa de Letalidad. A su vez, Perú es quien tiene mayor Tasa de Letalidad promedio con un valor de 11,2%; seguido con México con 9,49%. Brasil y Estados Unidos que han sido los paises con con mayor cantidad de personas contagiadas, presentan un promedio en la Tasa de Letalidad de 3,4% y 2,92% respectivamente. Uruguay, presenta un promedio de 1,82% y su máximo valor fue 3.160920% y se presentó el 18 de Julio de 2020.
+Los paises ubicados en centro américa fueron los que mayoritariamente presentaron una tasa muy elevada desde el primer día que tuvieron alguna persona infectada. Perú, Guayana e Islas Caymán llegaron a presentar un 100% de Tasa de Letalidad. A su vez, Perú es quien tiene mayor Tasa de Letalidad promedio en la región con un valor de 10.6%; seguido por Ecuador con 6.17%. Brasil y Estados Unidos que han sido los paises con con mayor cantidad de personas contagiadas, presentan un promedio en la Tasa de Letalidad de 3,4% y 2,9% respectivamente. Uruguay, presenta un promedio de 1,74% y su máximo valor fue 3.160920%, detectado el 18 de Julio de 2020.
 
+El comportamiento de esta tasa a nivel de la región ha sido bastante homogéneo a pesar de que Perú y Ecuador están por encima de la tasa promedio de la region (3,69%). En la primera etapa de contagio fue el momento en mayor incertidumbre y donde la letalidad del virus fue más alta. Con el pasar de las semanas, se puede apreciar una tendencia a la dismunción de esta tasa en los paises de mayor letalidad y una concentración  entre los valores 1% y 3% en los paises restantes.
 
+A pesar de que los paises con el pasar del tiempo han podido combatir esta epidemia y lograr dismunuir su letalidad en la población, las variantes que han surgido del virus no dejan bajar la guardia y no permite visualizar un horizonte cercano donde se vuelva a la normalidad tal cual lo era antes. 
+
+Además de las medidas y protocolos sanitarios para combatir el Covid-19 como son el distanciamiento social, lavado permanente de manos y uso de tapabocas, la vacunación contra el virus tiene como objetivo lograr que esta letalidad sea mínima.
+
+A continuación profunizaremos en la evolución del Covid-19 en Uruguay y el efecto que ha tenido la vacunación en combatir esta enfermedad.
 
 ### Evolución del Covid-19 en Uruguay
 
-Si nos centramos en nuestro país, el primer contagio se da el 12 de Marzo de 2020.
+Centrándonos en nuestro país, el primer contagio se da el 12 de Marzo de 2020. En ese momento, la incertidumbre y el miedo invadieron a la población. Si bien desde el punto de vista sanitario Uruguay ha presentado hasta el momento una evolución de casos diagnosticados y muertos por Covid-19 relativamente favorable con respecto a la mayor parte de los paises de la región, la economía ingresó en una marcada recesión que manifestó una caida del PIB en 2020, un hecho que no se registraba desde comienzos del siglo.
 
-```{r, echo=FALSE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y fallecidos por Covid-19 en Uruguay.\\label{f1}'}
+A modo de visualizar el efecto del Covid-19 en Uruguay, se presenta el siguiente gráfico, donde se puede observar la evolución de los nuevos contagios por día y fallecidos a causa de la pandemia en Uruguay.
+
+```{r, echo=FALSE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y fallecidos por Covid-19 en Uruguay. Se puede notar que el efecto de la vacunación comiensa a manifestarse positivamente en la cantidad de nuevos contagios luego de los dos meses que comenzó el plan de vacunación.\\label{f1}'}
 
 fig1<- datos_UY_Por_Fecha %>% ggplot() + 
   geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Casos nuevos")) +
@@ -250,14 +269,21 @@ fig1<- datos_UY_Por_Fecha %>% ggplot() +
   labs(x= "Fecha", y = "Cantidad de personas") + 
   theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 8),
         legend.position = "bottom") + scale_colour_brewer(palette = "Dark2") +
-  guides(color=guide_legend(""))
+  guides(color=guide_legend(""))+
+scale_x_date(breaks = "3 weeks")  
 print(fig1)
 ```
+
+Podemos visualizar como hasta finales del año 2020, Uruguay se mantuvo estable en cuanto a la cantidad de personas fallecidas y casos nuevos por día, sin embargo, a partir de Noviembre la ola de contagios comenzó a tomar valores importantes, con un promedio de 1516 casos nuevos por día desde ese entonces hasta la fecha. A su vez, el pico máximo de casos se da presentando 7289 casos nuevos el día 9 de Abril de 2021.
 
 
 ### Analisis Vacunatorio en Uruguay
 
-```{r, echo=FALSE, fig.pos="H", fig.cap="Evolucion del proceso vacunatorio en Uruguay"}
+La vacunación en Uruguay comenzó el 27 de Febrero de 2021. Este proceso fue pensado en forma progresiva, escalonada y en el menor tiempo posible, haciendo énfasis en las personas con riesgo de enfermar gravemente, riesgo de exposición y vulnerabilidad social.
+
+Se presenta a continuación el gráfico donde se puede observar como ha sido la evolución hasta el momento del porcentaje la población con una y ambas dosis.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE,fig.pos="H", fig.cap='Evolucion del proceso vacunatorio en Uruguay. Dado el proceso de vacunación, se espera que el 100% de la población esté vacunada con ambas dosis antes del fin del 2021.\\label{f}'}
 Uruguay_Vacunas<-vacunacion %>% select(date,total_vaccinations,people_vaccinated,people_fully_vaccinated,daily_vaccinated)%>%
   mutate(
     indicefv=((people_fully_vaccinated/3029358)*100),
@@ -272,15 +298,10 @@ Uruguay_Vacunas<-vacunacion %>% select(date,total_vaccinations,people_vaccinated
       scale_y_continuous(labels=scales::percent)+
     scale_color_manual(name="Indices",values=c("Poblacion con dos dosis"="#3FC600","Poblacion con almenos una dosis"="#DF7B0A"))+
     theme(legend.position="bottom",
-          axis.text.x = element_text(angle = 45, vjust=0.5, size = 6))+
+          axis.text.x = element_text(angle = 90, vjust=0.5, size = 6))+
+    scale_x_date(breaks = "1 weeks")+
     labs(y="Porcentaje de vacunacion",x="Fecha")
-
-  
-  
-
-
 ```
-
 
 Viendo el desarrollo de la vacunacion en Uruguay, podemos sacar el indice vacunatorio de la region total.
 Para ello aparte de los datos de vacunacion, tomamos la cantidad de poblacion en Uruguay segun el INE y realizamos el calculo del indice.  
@@ -299,11 +320,9 @@ La inmunidad colectiva es un factor que se da al momento de que un porcentaje al
 
 Los objetivos de la vacunación radican en reducir la morbolodad, mortalidad y letalidad asociada al Covid-19, la protección de la integridad de los sistemas de salud y de infraestructura de los servicios esenciales. 
 
-Esta investigación puede profundizarse en mayor grado mediante la Shiny, aun asi, podemos observar como la vacunación ayuda a reducir velozmente la mortalidad de el COVID-19.  
-
+Esta investigación puede profundizarse en mayor grado mediante la Shiny, aun así, a partir del siguiente gráfico podemos observar como la vacunación ayuda a reducir la mortalidad de el COVID-19 luego dos meses desde el comienzo del plan de vacunación, que es tiempo aproximado que se tarda una persona en recibir ambas dosis.  
   
-
-```{r, echo=FALSE, fig.width=10, fig.height = 10, fig.pos="H", fig.cap="Efecto de la vacunación en los infectados diarios y personas fallecidas por día."}
+```{r, echo=FALSE, fig.width=12, fig.height=11, fig.pos="H", fig.cap='Efecto de la vacunación en los infectados diarios y personas fallecidas por día. Se observa un efecto positivo en la cantidad de fallecimientos por día a causa del Covid-19 a partir de los dos meses de inició de la vacunacoión.\\label{f}'}
 UY<-Datos %>% filter(COUNTRY=="Uruguay")
 
 maximo<-UY%>%filter(PEOPLE_POSITIVE_NEW_CASES_COUNT==max(PEOPLE_POSITIVE_NEW_CASES_COUNT))
@@ -319,8 +338,8 @@ vac_fig1 <- ggplot(UY,aes(x=REPORT_DATE,y=PEOPLE_POSITIVE_NEW_CASES_COUNT))+
           geom_vline(aes(xintercept= ymd("2021-02-27"),color="Comienzo de vacunación"), linetype="dashed", size= 1)+
       theme(legend.position = "",
             legend.title = element_blank(), 
-            axis.text.y = element_text(size = 4),
-            axis.text.x = element_text(angle = 45, vjust=0.5, size = 6))+
+            axis.text.y = element_text(size = 8),
+            axis.text.x = element_text(angle = 90, vjust=0.5, size = 8))+
       scale_x_date(breaks = "2 weeks")+
       geom_text(aes(x=ymd("2021-02-27"),y=6000),label=paste0("2021-02-27"),color="#d95f02",vjust=0.5,hjust=0.5)
     
@@ -338,21 +357,37 @@ vac_fig2 <-ggplot(UY,aes(x=REPORT_DATE,y=PEOPLE_DEATH_NEW_COUNT))+
       geom_vline(aes(xintercept= ymd("2021-02-27"),color="Comienzo de vacunación"), linetype="dashed", size= 1)+
       theme(legend.position = "bottom",
             legend.title = element_blank(), 
-            axis.text.y = element_text(size = 4),
-            axis.text.x = element_text(angle = 45, vjust=0.5, size = 6))+
+            axis.text.y = element_text(size = 8),
+            axis.text.x = element_text(angle = 90, vjust=0.5, size = 8))+
       scale_x_date(breaks = "2 weeks")
       #geom_text(aes(x=ymd("2021-02-27"),y=75),label=paste0("2021-02-27"),color="#d95f02",vjust=0.5,hjust=0.5)
-    
 grid.arrange(vac_fig1,vac_fig2) 
 ```
 
 
-Podemos notar que el pico de muertes e infecciones es en el mismo dia, sin embargo, vemos como la vacuna tiene un efecto importante contra la mortalidad del virus COVID-19 reduciendo la mortalidad de esta drasticamente en cambio, la infeccion aun se mantiene de manera "constante" 
+Una observación que podemos notar es que el pico de muertes e infecciones ocurrió en el mismo dia, un mes y medio aproximadamente después que comenzó la vacunación. Sin embargo, se puede apreciar como la vacuna tiene un efecto positivo en la mortalidad del virus COVID-19, donde a partir de ese pico se observa una tendecia marcada hacia la disminución de muertes diarias. Por otra parte, el efecto de la vacunación en la cantidad de casos nuevos por día, muestra un comportamiento mas inestable, aunque a partir de Junio se observa también una tendencia a la baja de infectados nuevos por día.
 
-Esto lo podemos comprobar analizando la correclación entre el *índice de personas totalmente vacunadas* y la *Tasa de Letalidad*, la cual nos da un valor de 0.9780337, lo que manifiesta una relación positiva casi perfecta. 
-Cabe destacar, que el pico de la *Tasa de Letalidad* ocurrió en 2020-07-18, con un valor de 3.160920. Para el momento en que comenzó la vacunación, que fue el día 2021-02-27, esta tasa era del 1.0512186.
+Por otra parte, resulta interesante visualizar la evolución de la Tasa de Letalidad en nuestro país y ver el impacto que ha sufrido a partir de la vacunación.
 
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.pos = 'H', fig.cap='Evolución de la Tasa de Letalidad del Covid-19 en Uruguay con modelado generalizado aditivo (GAM). Se puede apreciar que el impacto de la vacunación no es tan notoria en la Tasa de Letalidad. \\label{f}'}
+fig6 <- Datos_Region %>%
+   mutate(Tasa_de_Letalidad = (PEOPLE_DEATH_COUNT/PEOPLE_POSITIVE_CASES_COUNT )*100)  %>% 
+  filter(COUNTRY == "Uruguay") %>% 
+    ggplot(aes(x= REPORT_DATE , y=Tasa_de_Letalidad)) +
+    geom_line()+ 
+    theme(legend.position = "bottom",
+          axis.text.x = element_text(angle = 90, vjust=0.5, size = 6)) +
+    labs(x = "Fecha", y = "Tasa de Letalidad", color = "")+
+    scale_y_continuous(labels=comma) + scale_fill_brewer(palette = "Dark2")+
+    geom_vline(aes(xintercept= ymd("2021-02-27"),color="Comienzo de vacunación"), linetype="dashed", size= 1)+
+  scale_x_date(breaks = "3 weeks")+
+  geom_smooth(method = "gam", linetype="dashed")
+print(fig6)
+```
 
+A partir del gráfico, podemos observar que la Tasa de Letalidad no muestra una tendencia a disminuir como concecuencia de la vacunación, por lo contrario, se mantiene creciente, aunque pasados los dos meses del inicio de vacunación, pareciera estabilizarse entorno al 1,4% y 1,5%.
+
+Esto lo podemos comprobar analizando la correclación entre el *índice de personas totalmente vacunadas* y la *Tasa de Letalidad*, la cual nos da un valor de 0.9780337, lo que manifiesta una relación positiva casi perfecta. Cabe destacar, que el pico de la *Tasa de Letalidad* ocurrió en 2020-07-18, con un valor de 3.160920. Para el momento en que comenzó la vacunación, que fue el día 2021-02-27, esta tasa era del 1.0512186.
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.pos = 'H', fig.cap='Diagrama de dispersión entre la Tasa de Letalidad y el Indice de personas totalmente vacunadas en Uruguay con modelado generalizado aditivo (GAM).\\label{f5}'}
 Datos_Pro_Uy_Por_Fecha <- datos_UY_Por_Fecha %>% 
@@ -368,7 +403,7 @@ datos_cov <- left_join(Tasa_de_Letalidad_Uy_Por_Fecha,indicefv, by = c("REPORT_D
 datos_cov_pro <- datos_cov %>% 
   filter(REPORT_DATE > "2021-02-26")
 
-cor(datos_cov_pro$Tasa_de_Letalidad, datos_cov_pro$indicefv)
+#cor(datos_cov_pro$Tasa_de_Letalidad, datos_cov_pro$indicefv)
 
 fig5 <- datos_cov_pro %>% 
   ggplot(aes(x=indicefv, y= Tasa_de_Letalidad))+
@@ -379,8 +414,6 @@ fig5 <- datos_cov_pro %>%
 print(fig5)
   
 ```
-
-
 
 
 ## Aplicación Shiny
@@ -399,4 +432,9 @@ La aplicacion utiliza:
 
 ## Conclusiones
 
+- La propagación del virus del Covid-19 ha impactado a nivel mundial, siendo América el continente más afectado hasta el momento, teniendo en cuenta la proporción de personas fallecidas a causa de la pandemia pandemia con el total de su población. La evolución del Covid 19 en la región tuvo a Brasil y Chile como los primeros paises que registraron casos positivos el día 29 de Febrero. Actualmente, analizando la Tasa de Infección, se aprecia una tendencia de aumento de la misma en la gran mayoría de los paises de la región a excepción de Ecuador, donde esta no parece tan pronunciada, y es Uruguay quien actualmente se encuentra como el país con mayor Tasa de Infección. 
+
+- En cuanto a la Tasa de Letalidad de la epidemia, a excepción de Perú y Ecuador que presentaron una tasa promedio del 10.6% y 6.17% respectivamente, el comportamiento de esta en los restantes paises se entornó entre el 1% y el 4%, siendo los primeros días de contagio los que presentaron mayor variación entre los paises. 
+
+- Respecto a la vacunación en Uruguay, se aprecia una leve tendencia a la disminución de nuevos contagios y más notoria en los fallecidos por día luego de los 2 meses que comenzó el plan de vacunación, sin embargo, en la Tasa de Letalidad se mantuvo creciente hasta los 2 meses luego del comienzo de la vacunación y ahora pareciera estabilizarse entorno al 1,4% y 1,5%. 
 
