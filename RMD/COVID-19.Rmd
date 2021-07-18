@@ -131,16 +131,18 @@ Como primer acercamiento hacia los datos que trabajaremos, se presenta la siguie
 
 
 ```{r, echo=FALSE, results='asis', resize.height=1,resize.width=1, fig.pos = 'H', fig.cap='Resumen de contagios y fallecidos por continente.\\label{t1}'}
-Datos %>% 
+cuadro1 <- Datos %>% 
   group_by(CONTINENT_NAME) %>% 
   summarise("Personas contagiadas" = sum(PEOPLE_POSITIVE_NEW_CASES_COUNT),
             "Personas fallecidas" = sum(PEOPLE_DEATH_NEW_COUNT)) %>%
   arrange("Personas contagiadas")%>% 
-  mutate(Total_Pob_2020 = c("1320","1098M","4701","801M","40M",0),
+  mutate(#Total_Pob_2020 = c("1320","1098M","4701","801M","40M",0),
          Porc_Muertes = c(0.0104,0.169,0.0158,0.138,0.00311,0)) %>% 
-  xtable(caption = "Resumen del efecto de la epidemia por continente") %>%
+  xtable(caption = "Resumen del efecto de la epidemia por continente") 
+
+names(cuadro1) <- c("Continente", "Personas infectadas", "Personas fallecidas", "Proporción de fallecidos por población")
   
-  print(caption.placement = 'top', include.rownames = FALSE, comment=FALSE)
+print(cuadro1, caption.placement = 'top', include.rownames = FALSE, comment=FALSE)
 ```
 
 Concentrándonos en la relación entre muertes y cantidad de habitantes por continente, se observa que el más afectado hasta el momento ha sido América, donde la cantidad de personas fallecidas representan el 0,169% de su población aproximadamente, seguido por  Europa con un 0,138%. El continente menos afectado por la pandemia considerando el porcentaje de fallecidos sobre su población es Oceanía.
@@ -220,6 +222,20 @@ popregion %>% ggplot() +
   theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 6),
         legend.position = "bottom", legend.title = element_blank()) + scale_colour_brewer(palette = "Dark2")+
   scale_y_continuous(labels=scales::percent_format(accuracy = 5)) 
+```
+
+```{r, echo=FALSE, results='asis', resize.height=1,resize.width=1, fig.pos = 'H', fig.cap='Resumen de Tasa de Letalidad e Infección por país de la región.\\label{t}'}
+cuadro2 <- popregion %>% 
+  filter(letal>0) %>% 
+  group_by(Location) %>% 
+  summarise("Promedio de Infección" = mean(infeccion)*100,
+            "Promedio de Letalidad" = mean(letal)*100,
+            "Máximo de infección" = as.character(REPORT_DATE [which.max(infeccion)]),
+            "Máximo de letalidad" = as.character(REPORT_DATE [which.max(letal)])) %>% 
+  xtable(caption = "Resumen de Tasa de Letalidad e Infección por país de la región") 
+
+  names(cuadro2) <- c("País", "Promedio de Infección", "Promedio de Letalidad", "Pico de infección", "Pico de letalidad")
+  print(cuadro2, caption.placement = 'top', include.rownames = FALSE, comment=FALSE)
 ```
 
 A partir del panel podemos observar que Uruguay y Chile han sido los únicos paises que han mantenido por debajo del 5% la Tasa da de Letalidad del virus. 
