@@ -462,5 +462,11 @@ La aplicación utiliza:
 
 - Respecto a la vacunación en Uruguay, se aprecia una leve tendencia a la disminución de nuevos contagios y más notoria en los fallecidos por día luego de los 2 meses que comenzó el plan de vacunación. Sin embargo, la Tasa de Letalidad se mantuvo creciente hasta los 2 meses luego del comienzo de la vacunación y ahora pareciera estabilizarse entorno al 1,4% y 1,5%. 
 
+## Referencias
 
+- Hadley Wickham & Garrett Grolemund, 2017, R for Data Science.
+
+- Hadley Wickham, 2020, Mastering Shiny.
+
+- Natalia da Silva, 2021, Notas del curso Nuevas tecnologías para el análisis estadístico de datos.
 
