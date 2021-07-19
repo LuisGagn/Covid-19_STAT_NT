@@ -83,7 +83,7 @@ Este virus afecta las vias respiratorias de las personas y en mayor manera a la 
 
 ¿Cómo ha sido la evolución de Coronavirus en la región? ¿Cuándo fue el pico de muertes en Uruguay? ¿Es Uruguay el país en la situación más crítica en la actualidad? ¿Han tenido las vacunas un impacto positivo en la reducción de casos? Estas son preguntas que pueden surgir naturalmente cuando tratamos en el tema del Covid-19.
 
-Para responder esto, hay diversas fuentes de datos que permiten un relevamiento de toda la información. En nuestro caso, trabajaremos sobre un conjunto de datos actualizados de *data.world*, los cuáles tienen el recuento de casos positivos, nuevos, recuento de personas fallecidas y por día, para todos los paises del mundo. A su vez, trabajaremos con los datos de las vacunas en Uruguay, tomados del [repositorio de 3dgiordano](https://github.com/3dgiordano/covid-19-uy-vacc-data/blob/main/data/Uruguay.csv) los cuáles se actualizan a diario.
+Para responder esto, hay diversas fuentes de datos que permiten un relevamiento de toda la información. En nuestro caso, trabajaremos sobre un conjunto de datos actualizados de [data.world](https://data.world/covid-19-data-resource-hub/covid-19-case-counts), los cuáles tienen el recuento de casos positivos, nuevos, recuento de personas fallecidas y por día, para todos los paises del mundo. A su vez, trabajaremos con los datos de las vacunas en Uruguay, tomados del [repositorio de 3dgiordano](https://github.com/3dgiordano/covid-19-uy-vacc-data/blob/main/data/Uruguay.csv) los cuáles se actualizan a diario.
 
 A partir de ellos, pretendemos dar respuesta a estas interrogantes, analizando de manera descriptiva los datos hasta el momento, aplicando  diversas técnicas aprendidas durante el curso.
 
