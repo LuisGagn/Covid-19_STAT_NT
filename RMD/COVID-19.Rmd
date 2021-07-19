@@ -454,6 +454,47 @@ La aplicación utiliza:
 + shinydashboard para la interfaz amigable y moderna
 
 
+### ¿Comó funciona la aplicación?
+
+La aplicacion funciona utilizando los elementos mencionados arriba donde a posteriori se explicara como funciona cada uno de estos.
+
+### ShinyDashboard
+
+ShinyDashboard es una extension de Shiny que ayuda a crear "Dashboards" facilitando la visualizacion y presentacion de la informacion necesaria.  
+
+```{r, echo=FALSE, fig.align='center', fig.cap='Visualizacion general de la interfaz ShinyDashboard\\label{tab}'}
+knitr::include_graphics("Fotos/Shiny1.png", dpi=300)
+```
+
+Consigo, tenemos una barra lateral(Dashboard) donde podemos subdividir la Shiny en secciones, liberando la concentración de datos seleccionando las rayitas.  
+```{r, echo=FALSE, fig.align='center', fig.cap='Uso de la Dashboard\\label{tab}'}
+knitr::include_graphics("Fotos/Shiny2.png", dpi=150)
+```
+
+### Ggiraph
+
+GGiraph es una extension de GGplot2 donde podemos generar graficos interactivos, en esta ocacion, lo utilizamos para generar un mapamundi interactivo.  
+En dicho mapa, podemos visualizar la cantidad de Muertos e Infectados de forma diaria o acumulativa y hasta que dia del año deseamos verlo.  
+Todo eso es posible gracias a la utilizacion de Shiny y su Dashboard que facilita la visualizacion del Mapa.
+
+
+```{r, echo=FALSE, fig.align='center', fig.cap='Mapa interactivo\\label{tab}'}
+knitr::include_graphics("Fotos/Shiny4.png", dpi=150)
+```
+
+
+
+### DyGraph, plotly y xts
+
+DyGraph y xts se utiliza para realizar graficos donde podemos movernos sobre la linea temporal, realizar acercamientos y analisis mas comodos al poder elegir el rango temporal.
+
+Plotly tambien fue utilizado con el mismo objetivo pero para otros tipos de graficos
+
+```{r, echo=FALSE, fig.align='center', fig.cap='Interaccion de Dygraph\\label{tab}'}
+knitr::include_graphics("Fotos/Shiny3.png", dpi=200)
+```
+
+
 ## Conclusiones
 
 - La propagación del virus del Covid-19 ha impactado a nivel mundial, siendo América el continente más afectado hasta el momento, teniendo en cuenta la proporción de personas fallecidas a causa de la pandemia con el total de su población. La evolución del Covid 19 en la región tuvo a Brasil y Chile como los primeros paises que registraron casos positivos el día 29 de Febrero. Actualmente, analizando la Tasa de Infección, se aprecia una tendencia de aumento en la gran mayoría de los paises de la región a excepción de Ecuador, donde esta no parece tan pronunciada, y es Uruguay quién actualmente se encuentra como el país con mayor Tasa de Infección. 

@@ -429,7 +429,7 @@ server <- function(input, output, session) {
   
   
   #Calls
-  output$mapa<-renderGirafe(girafe(ggobj = graf(),width_svg = 7, height_svg = 4, 
+  output$mapa<-renderGirafe(girafe(ggobj = graf(),width_svg = 10, height_svg = 3, 
                                    options=list(opts_sizing(rescale=TRUE), 
                                                 opts_hover(css = "fill:#C7B6DC;stroke:#C7B6DC;cursor:pointer;"))))
   
