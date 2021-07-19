@@ -25,9 +25,10 @@ library(plotly)
 
 
 
-Datos<- read_csv("../RMD/COVID-19 Activity.zip")
+Datos<- read_csv("../Data/COVID-19 Activity.zip")
 vacunacion<- read.csv("https://raw.githubusercontent.com/3dgiordano/covid-19-uy-vacc-data/main/data/Uruguay.csv")
 world <- ne_countries(scale = "medium", returnclass = "sf")
+poblacion<- read_csv("../Data/Population2019.csv")
 
 
       ##########
@@ -63,7 +64,12 @@ barra_lateral <- dashboardSidebar(
              
             # INPUTS VACUNACION // ignorar es para ver como se hace todo    
              selectInput("va","Seleccione el Pais",
-                        c("Uruguay","Argentina","Brazil","Chile")))
+                        c("Uruguay","Argentina","Brazil","Chile"))),
+    
+    # TASAS
+    menuItem("Tasas", tabName="tasa", icon=icon("percent"),
+             menuSubItem("Ver",tabName = "tasita",icon=icon("plus-square")),
+             selectInput("tsa", "Seleccione el Pais",c("Uruguay", "Argentina", "Brazil", "Paraguay", "Chile", "Venezuela", "Peru", "Colombia", "Ecuador", "Todos")))
     
   ) # CLOSES SIDEBARMENU
   ) # CLOSES DASHBOARDSIDEBAR
@@ -75,6 +81,7 @@ contenido <- dashboardBody(
  
   tabItems(
     tabItem(tabName = "inicio", h1("Introduccion"),
+            HTML('<center><img src="udelar.png", width=200,heigth=400></center>'),
             h3("El Coronavirus"),p("El virus COVID-19 (Coronavirus) nos esta afectando continuamente desde fines del 2019 desde su aparicion en China y siendo este
                                    declarado como pandemia el 11 de marzo del 2020."),
             HTML("<br><br>"),
@@ -102,7 +109,7 @@ contenido <- dashboardBody(
             HTML("<br><br><br>"),
             p("Proyecto STAT_NT | FCEA"),
             h4("Profesores:"),
-            p("Natalia DaSilva | Federico"),
+            p("Natalia DaSilva | Federico Molina"),
             h4("Alumnos"),
             p("Nicolas Ferreira | Luis Gagñevin"),
             HTML("<br><br><br>"),
@@ -158,7 +165,27 @@ contenido <- dashboardBody(
           
           tabPanel("Tabla",fluidRow(DT::dataTableOutput("tabla")))
           )
-) # CLOSES TABITEM MAPA
+),# CLOSES TABITEM MAPA
+
+tabItem(tabName="tasita",
+        tabsetPanel(
+          tabPanel("Tasa por pais",
+                   fluidRow(
+                     box(
+                       title="Tasa de Mortalidad e Infeccion", status="danger",solidHeader = TRUE,
+                       plotOutput("tasasmi")
+                     ),
+                     
+                       box(
+                        title="  Tabla de datos", status="warning", solidHeader = TRUE,
+                        tableOutput("tabpais")
+                       )
+                    
+                   ))
+        ))
+
+
+
 ) # CLOSES TAB ITEMS
 ) # CLOSES DASHBOARD BODY
 
@@ -346,8 +373,54 @@ server <- function(input, output, session) {
     guides(color=guide_legend(""))
     )
   
-
+  ##### #####  #####  #####  #####  #####  #####  #####  #####  #####  #####  #####   
   
+  
+  Datos_Region <- reactive(
+    if(input$tsa=="Todos"){
+    
+    
+    Datos %>% 
+    filter(CONTINENT_NAME == "America") %>% 
+    group_by(COUNTRY) %>%
+    filter(COUNTRY == c("Uruguay", "Argentina", "Brazil", "Paraguay", "Chile", "Venezuela", "Peru", "Colombia", "Ecuador")) %>% 
+    select(REPORT_DATE, starts_with("People_")) %>% 
+    arrange(REPORT_DATE)
+    }else{
+      Datos %>% 
+        filter(CONTINENT_NAME == "America") %>% 
+        group_by(COUNTRY) %>%
+        filter(COUNTRY == input$tsa) %>% 
+        select(REPORT_DATE, starts_with("People_")) %>% 
+        arrange(REPORT_DATE)
+}
+      )
+  
+  popregion <- reactive(poblacion %>% filter(Time==2020)%>% select(Location,PopTotal,Time)%>%merge(Datos_Region(), by.x="Location", by.y="COUNTRY")%>%
+    group_by(Location)%>%
+    summarise(infeccion=round((PEOPLE_POSITIVE_CASES_COUNT/(PopTotal*1000)),digits=2), REPORT_DATE,letal=round((PEOPLE_DEATH_COUNT/PEOPLE_POSITIVE_CASES_COUNT),digits=2))
+  
+  )
+  
+  tasagraf<- reactive(
+    popregion() %>% ggplot() + 
+      geom_line(aes(x=REPORT_DATE, y=infeccion, color = "Tasa de infección")) +
+      geom_line(aes(x=REPORT_DATE, y=letal, color = "Tasa de letalidad")) + 
+      facet_wrap(~Location) + 
+      labs(x = "Fecha", y = "Porcentaje afectado") +
+      theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 6),
+            legend.position = "bottom", legend.title = element_blank()) + scale_colour_brewer(palette = "Dark2")+
+      scale_y_continuous(labels=scales::percent_format(accuracy = 5)) 
+  )
+  
+  cuadro2 <- reactive(popregion() %>% 
+    filter(letal>0) %>% 
+    group_by(Location) %>% 
+    summarise("Promedio de Infección" = mean(infeccion)*100,
+              "Promedio de Letalidad" = mean(letal)*100,
+              "Máximo de infección" = as.character(REPORT_DATE [which.max(infeccion)]),
+              "Máximo de letalidad" = as.character(REPORT_DATE [which.max(letal)]))
+  )
 
   
   
@@ -368,6 +441,8 @@ server <- function(input, output, session) {
   output$test33<- renderPlotly({test2()})
   output$test32<- renderPlotly({test21()})
   output$vacunacion2<-renderPlotly({fig1()})
+  output$tasasmi<- renderPlot({tasagraf()})
+  output$tabpais<- renderTable({cuadro2()})
 }
 
 

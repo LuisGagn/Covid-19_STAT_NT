@@ -92,9 +92,9 @@ A partir de ellos, pretendemos dar respuesta a estas interrogantes, analizando d
 ## Datos
 
 ```{r, echo=FALSE, warning=FALSE, include=FALSE}
-Datos <- read_csv("COVID-19 Activity.csv")
+Datos <- read_csv("../Data/COVID-19 Activity.zip")
 vacunacion <- read.csv("https://raw.githubusercontent.com/3dgiordano/covid-19-uy-vacc-data/main/data/Uruguay.csv")
-poblacion<- read_csv("Population2019.csv")
+poblacion<- read_csv("../Data/Population2019.csv")
 
 #Manipulacion
 str(Datos)
