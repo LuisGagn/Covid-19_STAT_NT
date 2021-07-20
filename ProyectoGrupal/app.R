@@ -82,26 +82,25 @@ contenido <- dashboardBody(
   tabItems(
     tabItem(tabName = "inicio", h1("Introduccion"),
             HTML('<center><img src="udelar.png", width=200,heigth=400></center>'),
-            h3("El Coronavirus"),p("El virus COVID-19 (Coronavirus) nos esta afectando continuamente desde fines del 2019 desde su aparicion en China y siendo este
-                                   declarado como pandemia el 11 de marzo del 2020."),
+            h3("El Coronavirus"),p("Coronavirus es una familia de virus conocidos por causar enfermedades que afectan las vías respiratorias de las personas, en mayor manera a la población de más edad y/o con enfermedades respiratorias o pobres condiciones físicas."),
+                                 p("EL COVID-19 es la enfermadad causada por el coronavirus y nos ha afectado de gran manera en estos años. La misma se originó a fines del 2019 con una infección en China y fue declarada pandemia por la OMS el 30 de Enero de 2020, transformándose en una de las crisis sanitarias que más ha afectado a la humanidad."),
             HTML("<br><br>"),
-            h4("Objetivo de la aplicacion"), p("El objetivo principal de la aplicacion es poder visualizar y ayudar a visualizar de manera interactiva el efecto del virus COVID-19 en 
-                                               la poblacion, tanto de la region como en el mundo. 
-                                               A su vez mostrar como manejo Uruguay la vacunacion y como la misma afecto y de que manera"),
-                                             p("Para lograr eso realizamos varios analisis y diagramas donde la persona podra interactuar y ver por su propia cuenta
-                                                como evoluciono la Pandemia"),
+            h4("Objetivo de la aplicación"), p("El objetivo principal de la aplicación es generar un informe interactivo que permita visualizar el efecto del COVID-19 en la población mundial, haciendo énfasis en América y la región. 
+                                               A su vez, presentar visualizaciones que permitan interpretar cómo ha sido el proceso de vacunación en Uruguay y su impacto en la epidemia"),
+                                             p("Para lograr eso realizamos varios gráficos y diagramas dinámicos, donde el usuario podrá interactuar e interpretar los resultados rápidamente, observando por su propia cuenta
+                                                como ha sido la evolución del virus"),
             
             HTML("<br>"),
-            h4("Informe"),p("Contamos con un informe detallado con informacion muy relevante que servira de ayuda al momento de visualizar la aplicacion.",
+            h4("Informe"),p("Contamos adicionalmente con un informe donde se detalla información relevante que servirá de ayuda al momento de visualizar la aplicación e interpretar los gráficos y datos.",
                             a(href="https://raw.githubusercontent.com/LuisGagn/Covid-19_STAT_NT/main/RMD/COVID-19.pdf?token=ATTCHVE3EUMFQXYWTGGBMP3A46MTS","Link del PDF")),
             HTML("<br>"),
-            h4("Desarrollo"), p("La aplicacion se desarrollo utilizando el lenguaje de ciencia de datos: R, junto con la aplicacion RStudio, 
-                                para poder ver el desarrollo de la misma, podran ingresar al link del repositorio en GitHub enlistado en el final de esta diapositiva" ),
+            h4("Desarrollo"), p("La aplicación se desarrolló utilizando el lenguaje de ciencia de datos: R, junto con la aplicacion RStudio, 
+                                para poder ver el desarrollo de la misma, podrán ingresar al link del repositorio en GitHub enlistado en el final de esta diapositiva" ),
             HTML("<br>"),
             h4("Datos Utilizados"),p("Los datos utilizados fueron obtenidos de la plataforma", a(href="https://data.world/covid-19-data-resource-hub/covid-19-case-counts/workspace/file?filename=COVID-19+Activity.csv","data.world"), 
-            "donde se actualizan dia a dia con informacion de todo el mundo, 
-                                     tambien datos obtenidos del repositorio de:",a(href="https://github.com/3dgiordano/covid-19-uy-vacc-data","3dgiordano"),
-            "los cuales contienen una gran informacion sobre la vacunacion en Uruguay y son actualizados diariamente con datos del",a(href="https://monitor.uruguaysevacuna.gub.uy/","monitor de vacunacion")),
+            "donde se actualizan a diario con información de todo el mundo, 
+                                     también datos obtenidos del repositorio de:",a(href="https://github.com/3dgiordano/covid-19-uy-vacc-data","3dgiordano"),
+            "los cuáles contienen información sobre la vacunación en Uruguay y son actualizados diariamente con datos del",a(href="https://monitor.uruguaysevacuna.gub.uy/","monitor de vacunacion")),
             
             
             
@@ -111,7 +110,7 @@ contenido <- dashboardBody(
             h4("Profesores:"),
             p("Natalia DaSilva | Federico Molina"),
             h4("Alumnos"),
-            p("Nicolas Ferreira | Luis Gagñevin"),
+            p("Nicolás Ferreira | Luis Gagñevin"),
             HTML("<br><br><br>"),
             p(icon=icon("github"), a(href="https://github.com/LuisGagn/Covid-19_STAT_NT", "Repositorio"))),
     
@@ -139,7 +138,7 @@ contenido <- dashboardBody(
                      )
                      )
               ),
-              tabPanel("Vacunacion",
+              tabPanel("Vacunación",
                        fluidRow(
                          box(
                            title = "Efectos de la Vacunacion",status="success",solidHeader = TRUE,width=350,
