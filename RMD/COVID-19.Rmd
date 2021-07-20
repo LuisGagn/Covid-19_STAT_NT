@@ -62,6 +62,8 @@ knitr::include_graphics("Fotos/Udelar.png", dpi=250)
 
 # Nuevas tecnologías para el análisis estadístico de datos 
 
+
+
 ## Docentes:
 
 - Natalia Da Silva
@@ -78,8 +80,9 @@ El siguiente trabajo tiene como objetivo la presentación del proyecto final del
  
 ## Introducción
 
-EL COVID-19 es la enfermadad causada por el coronavirus y nos ha afectado de gran manera en estos años, originándose a fines del 2019 con una infección en China, generando la pandemia a nivel global que nos afecta hasta el día de hoy.  
-Este virus afecta las vias respiratorias de las personas y en mayor manera a la población de mayor edad y/o con enfermedades respiratorias o pobres condiciones físicas.  
+Coronavirus es una familia de virus conocidos por causar enfermedades que afectan las vías respiratorias de las personas, en mayor manera a la población de más edad y/o con enfermedades respiratorias o pobres condiciones físicas.
+
+EL COVID-19 es la enfermadad causada por el coronavirus y nos ha afectado de gran manera en estos años. La misma se originó a fines del 2019 con una infección en China y fue declarada pandemia por la OMS el 30 de Enero de 2020, transformándose en una de las crisis sanitarias que más ha afectado a la humanidad.
 
 ¿Cómo ha sido la evolución de Coronavirus en la región? ¿Cuándo fue el pico de muertes en Uruguay? ¿Es Uruguay el país en la situación más crítica en la actualidad? ¿Han tenido las vacunas un impacto positivo en la reducción de casos? Estas son preguntas que pueden surgir naturalmente cuando tratamos en el tema del Covid-19.
 
@@ -133,16 +136,16 @@ El conjunto de datos con los que trabajaremos contiene información del Covid-19
 - Cantidad de fallecimientos por día
 
 
-La pandemia de Covid-19 ha impactado a nivel mundial en mayor o menor grado, pero hasta la fecha, son más de 220 países y territorios del mundo afectados, y más de 3.9 millones de personas fallecidas hasta el momento. 
+La pandemia del Covid-19 ha impactado en mayor o menor grado a nivel mundial, siendo hasta la fecha más de 220 países y territorios del mundo afectados y más de 3.9 millones de personas fallecidas hasta el momento. 
 
-A modo de visualizar la cantidad de muertes por país, se presenta el siguiente mapa mundial donde se pueden observar facilmente los paises que han presentado mayor cantidad de personas fallecidas a raíz de la pandemia.
+A modo de contextualizar el efecto negativo que ha producido la pandemia sobre la población mundial, se presenta el siguiente mapa donde se puede observar facilmente los paises que han presentado mayor cantidad de personas fallecidas a raíz de la virus.
 
 ```{r, echo=FALSE, fig.align='center', fig.pos = 'H', fig.cap='Mapa mundial de fallecidos por Covid-19. Este gráfico surge de la aplicación Shiny.\\label{f}'}
 knitr::include_graphics("Fotos/MapaMuertos.png", dpi=250)
 ```
-A partir de este gráfico, podemos observar que Brasil, Estados Unidos e India han sido los países que más muertes han tenido en su población como consecuencia de la pandemia.
+A partir de este gráfico, se observa que Brasil, Estados Unidos e India han sido los países que más muertes han tenido en su población como consecuencia de la pandemia.
 
-Sin embargo, dado la diferencia que hay entre las poblaciones de cada país, es difícil sacar alguna conclusión comparativa respecto a la mortalidad del virus. Por esto, se presenta a continuación la siguiente tabla donde se calcula la proporción de fallecidos por la población para cada continente.
+Sin embargo, dado la diferencia que hay entre las poblaciones de cada país, es difícil sacar alguna conclusión comparativa entre los ellos respecto a la mortalidad del virus. Para ayudar con esto, se presenta a continuación una tabla con la proporción de fallecidos por la población para cada continente.
 
 
 ```{r, echo=FALSE, results='asis', resize.height=1,resize.width=1, fig.pos = 'H', fig.cap='Resumen de contagios y fallecidos por continente.\\label{t1}'}
@@ -168,7 +171,7 @@ Concentrándonos en la relación entre muertes y cantidad de habitantes por cont
 
 Los primeros registros de casos de Covid-19 se dan en Brasil y Chile el día el 29 de Febrero de 2020. El primer fallecido a causa del coronavirus se registra en Argentina, el 8 de Marzo del 2020, 4 días antes de que se registrara el primer caso en nuestro país.
 
-Profundizando en el impacto de la epidemia en nuestro continente, se hará un análisis por cohorte, en donde trabajaremos con los datos segmentados de acuerdo a la fecha de primer contagio por cada país.
+Profundizando en el impacto de la epidemia en nuestro continente, procederemos a realizar un análisis por cohorte, en donde trabajaremos con los datos segmentados de acuerdo a la fecha de primer contagio por cada país.
 
 ```{r,message=FALSE, echo=FALSE}
 #Visualizo por pais la fecha de primer contagio
@@ -215,7 +218,7 @@ Se puede apreciar que a partir de los 100 días desde el primer contagio, el com
 
 Si bien este gráfico nos permite una visualización global a nivel de la región, es complejo obtener alguna conclusión respecto a la letalidad del virus en cada país dado la diferencia poblacional que hay entre los paises.
 
-Para poder realizar este tipo de comparación, uno de los principales indicadores de la epidemiología es la Tasa de Letalidad, la cual se define como el cociente entre la cantidad de personas fallecidas a causa de una determinada enfermedad en un período de tiempo y el número de las personas afectadas por esa misma enfermedad en ese mismo período. En nuestro caso, nos permitirá comparar el efecto del Covid-19 en los paises de América.
+Para poder realizar este tipo de comparación, uno de los principales indicadores en la epidemiología es la Tasa de Letalidad, la cual se define como el cociente entre la cantidad de personas fallecidas a causa de una determinada enfermedad en un período de tiempo y el número de las personas afectadas por esa misma enfermedad en ese mismo período. En nuestro caso, nos permitirá comparar el efecto del Covid-19 en los paises de América.
 
 A su vez, otro indicador que permite comparar el efecto del coronavirus entre los paises es la Tasa de Infectados, que se define como el cociente entre el número de personas afectadas a raíz del virus y la población total del país.
 
@@ -223,7 +226,7 @@ Es preciso recordar, que el número de infecciones es un denominador altamente c
 
 A continuación se podrá visualizar un panel con los países de la región, en dónde se observa la evolución de las tasasde infección y letalidad, y un cuadro a modo de resumen donde se tiene el promedio de estas tasas por país y a su vez la fecha en donde tuvieron su máximo valor.
 
-```{r, echo=FALSE, message=FALSE,  warning=FALSE, fig.pos = 'H', fig.cap='Evolución de las Tasas de letalidad e infección. Se puede apreciar como el comprotamiento de la epidema ha sido heterogéneo entre los paises de la región. \\label{f}'}
+```{r, echo=FALSE, message=FALSE,  warning=FALSE, fig.pos = 'H', fig.cap='Evolución de las Tasas de letalidad e infección. Se puede apreciar como el comportamiento de la epidema ha sido diferente en todos los paises de la región. \\label{f}'}
 popregion <- poblacion %>% filter(Time==2020)%>% select(Location,PopTotal,Time)%>%merge(Datos_Region, by.x="Location", by.y="COUNTRY")%>%
             group_by(Location)%>%
             summarise(infeccion=round((PEOPLE_POSITIVE_CASES_COUNT/(PopTotal*1000)),digits=2), REPORT_DATE,letal=round((PEOPLE_DEATH_COUNT/PEOPLE_POSITIVE_CASES_COUNT),digits=2))
@@ -237,6 +240,13 @@ popregion %>% ggplot() +
         legend.position = "bottom", legend.title = element_blank()) + scale_colour_brewer(palette = "Dark2")+
   scale_y_continuous(labels=scales::percent_format(accuracy = 5)) 
 ```
+Podemos observar que Uruguay y Chile han sido los únicos paises que han mantenido por debajo del 5% la tasa da letalidad del virus en lo que va desde el comienzo de la epidemia. 
+
+Actualmente, a excepción de Perú y Ecuador, quienes aún tienen la tasa de letalidad por encima que la tasa de infeción, todos los paises de la región han logrado disminuir la letalidad y que su tasa quede por debajo de la tasa de infección.
+
+Podemos apreciar también como la tasa de infección presenta una pronunciada tendencia de ascenso a nivel general en la región, lo que representa que vada vez es mayor la proporción de personas que contraen la enfermedad en cada país, siendo Uruguay quién actualmente presenta la mayor tasa de infección en la región.
+
+\newpage
 
 ```{r, echo=FALSE, results='asis', resize.height=1,resize.width=1, fig.pos = 'H', fig.cap='Resumen de Tasa de Letalidad e Infección por país de la región.\\label{t}'}
 cuadro2 <- popregion %>% 
@@ -252,13 +262,9 @@ cuadro2 <- popregion %>%
   print(cuadro2, caption.placement = 'top', include.rownames = FALSE, comment=FALSE)
 ```
 
-Podemos observar que Uruguay y Chile han sido los únicos paises que han mantenido por debajo del 5% la Tasa da de Letalidad del virus. 
+A partir del cuadro podemos observar que el pico máximo de letalidad en los paises de la región se generó en 2020, entre Febrero y Agosto, cuando la epidemia estaba en sus inicios. Uruguay es quién presenta el pico de letalidad más próximo a la actualidad, siendo el 10 de Agosto del 2020.
 
-Actualmente, a excepción de Perú y Ecuador, quienes aún tienen la Tasa de Letalidad por encima que la Tasa de Infeción, todos los paises de la región han logrado disminuir la letalidad y que su tasa quede por debajo de la tasa de infección.
-
-Podemos apreciar también como la Tasa de infección presenta una pronunciada tendencia de ascenso a nivel general en la región, siendo Uruguay quién actualmente presenta una mayor tasa de infección en la región.
-
-Centrándonos solo en la Tasa de Letalidad, se presenta a continuación un gráfico con la evolución de la misma en todos los paises de la región.
+Profundizando en esta tasa de letalidad, se presenta a continuación un gráfico con la evolución de la misma en todos los paises de la región.
 
 ```{r, echo=FALSE,message=FALSE, warning=FALSE, fig.pos = 'H', fig.cap='Evolución de la Tasa de Letalidad en los paises de la región con modelado de regresión local (LOESS). Se aprecia como Perú y Ecuador han sido los paises de la región donde el virus del Covid-19 ha sido más letal.\\label{f}'}
 fig4 <- Datos_Region %>% 
@@ -290,14 +296,14 @@ Centrándonos en nuestro país, el primer contagio se da el 12 de Marzo de 2020.
 
 A modo de visualizar el efecto del Covid-19 en Uruguay, se presenta el siguiente gráfico, donde se puede observar la evolución de los nuevos contagios por día y fallecidos a causa de la pandemia en Uruguay.
 
-```{r, echo=FALSE, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y fallecidos por Covid-19 en Uruguay. Se puede notar que el efecto de la vacunación comienza a manifestarse positivamente en la cantidad de nuevos contagios luego de los dos meses que comenzó el plan de vacunación.\\label{f1}'}
+```{r, echo=FALSE, fig.width=7 , fig.height=3, fig.pos = 'H', fig.cap='Evolución de los nuevos contagios y fallecidos por Covid-19 en Uruguay. Se puede notar que el efecto de la vacunación comienza a manifestarse positivamente en la cantidad de nuevos contagios luego de los dos meses que comenzó el plan de vacunación.\\label{f1}'}
 
 fig1<- datos_UY_Por_Fecha %>% ggplot() + 
   geom_line(aes(x=REPORT_DATE, y=PEOPLE_POSITIVE_NEW_CASES_COUNT, color = "Casos nuevos")) +
   geom_line(aes(x=REPORT_DATE, y=PEOPLE_DEATH_COUNT, color = "Fallecidos")) +
   geom_vline(aes(xintercept= ymd("2021-02-27"),color="Comienzo de vacunación"), linetype="dashed", size= 1)+
   labs(x= "Fecha", y = "Cantidad de personas") + 
-  theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 8),
+  theme(axis.text.x = element_text(angle = 90, vjust=0.5, size = 8),
         legend.position = "bottom") + scale_colour_brewer(palette = "Dark2") +
   guides(color=guide_legend(""))+
 scale_x_date(breaks = "3 weeks")  
@@ -310,7 +316,7 @@ Podemos visualizar como hasta finales del año 2020, Uruguay se mantuvo estable 
 
 La vacunación en Uruguay comenzó el 27 de Febrero de 2021. Este proceso fue pensado en forma progresiva, escalonada y en el menor tiempo posible, haciendo énfasis en las personas con riesgo de enfermar gravemente, riesgo de exposición y vulnerabilidad social.
 
-Se presenta a continuación un gráfico donde se puede observar como ha sido la evolución hasta el momento del porcentaje la población con una y ambas dosis.
+A continuación se presenta un gráfico que permite visualizar como ha sido la evolución hasta el momento, del porcentaje la población con una y ambas dosis.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE,fig.pos="H", fig.cap='Evolucion del proceso vacunatorio en Uruguay. Dado el proceso de vacunación, se espera que el 100% de la población esté vacunada con ambas dosis antes del fin del 2021.\\label{f}'}
 Uruguay_Vacunas<-vacunacion %>% select(date,total_vaccinations,people_vaccinated,people_fully_vaccinated,daily_vaccinated)%>%
@@ -332,8 +338,7 @@ Uruguay_Vacunas<-vacunacion %>% select(date,total_vaccinations,people_vaccinated
     labs(y="Porcentaje de vacunacion",x="Fecha")
 ```
 
-Viendo el desarrollo de la vacunacion en Uruguay, podemos sacar el indice vacunatorio de la region total.
-Para ello aparte de los datos de vacunación, tomamos la cantidad de población en Uruguay según el INE y realizamos el cáluclo del índice.  
+Viendo el desarrollo de la vacunacion en Uruguay, podemos sacar el indice vacunatorio de la region total. Para ello aparte de los datos de vacunación, tomamos la cantidad de población en Uruguay según el INE y realizamos el cáluclo del índice.  
   
 Podemos ver que aproximadamente el 81% de la población hasta el momento ha recibido al menos una de las dos dosis necesarias para ello, en cambio, la cantidad de personas con ambas dosis (lo cuál es considerado como la vacunacion total, hasta el momento ya que es posible una tercera dosis) es del 68% hasta la fecha, resultando un 13% con una dosis faltante y 19% sin haber recibido ninguna dosis aún.  
   
@@ -345,7 +350,7 @@ Los objetivos de la vacunación radican en reducir la morbilidad, mortalidad y l
 
 Esta investigación puede profundizarse en mayor grado mediante la Shiny, aun así, a partir del siguiente gráfico podemos observar como la vacunación ayuda a reducir la mortalidad del COVID-19 luego de dos meses desde el comienzo del plan de vacunación, que es tiempo aproximado que se tarda una persona en recibir ambas dosis.  
   
-```{r, echo=FALSE, fig.width=12, fig.height=11, fig.pos="H", fig.cap='Efecto de la vacunación en los infectados diarios y personas fallecidas por día. Se observa un efecto positivo en la cantidad de fallecimientos por día a causa del Covid-19 a partir de los dos meses de inició de la vacunación.\\label{f}'}
+```{r, echo=FALSE, fig.width=12, fig.height=10, fig.pos="H", fig.cap='Efecto de la vacunación en los infectados diarios y personas fallecidas por día. Se observa un efecto positivo en la cantidad de fallecimientos por día a causa del Covid-19 a partir de los dos meses de inició de la vacunación.\\label{f}'}
 UY<-Datos %>% filter(COUNTRY=="Uruguay")
 
 maximo<-UY%>%filter(PEOPLE_POSITIVE_NEW_CASES_COUNT==max(PEOPLE_POSITIVE_NEW_CASES_COUNT))
@@ -361,7 +366,7 @@ vac_fig1 <- ggplot(UY,aes(x=REPORT_DATE,y=PEOPLE_POSITIVE_NEW_CASES_COUNT))+
           geom_vline(aes(xintercept= ymd("2021-02-27"),color="Comienzo de vacunación"), linetype="dashed", size= 1)+
       theme(legend.position = "",
             legend.title = element_blank(), 
-            axis.text.y = element_text(size = 8),
+            axis.text.y = element_text(size = 9),
             axis.text.x = element_text(angle = 90, vjust=0.5, size = 8))+
       scale_x_date(breaks = "2 weeks")+
       geom_text(aes(x=ymd("2021-02-27"),y=6000),label=paste0("2021-02-27"),color="#d95f02",vjust=0.5,hjust=0.5)
@@ -380,7 +385,7 @@ vac_fig2 <-ggplot(UY,aes(x=REPORT_DATE,y=PEOPLE_DEATH_NEW_COUNT))+
       geom_vline(aes(xintercept= ymd("2021-02-27"),color="Comienzo de vacunación"), linetype="dashed", size= 1)+
       theme(legend.position = "bottom",
             legend.title = element_blank(), 
-            axis.text.y = element_text(size = 8),
+            axis.text.y = element_text(size = 9),
             axis.text.x = element_text(angle = 90, vjust=0.5, size = 8))+
       scale_x_date(breaks = "2 weeks")
       #geom_text(aes(x=ymd("2021-02-27"),y=75),label=paste0("2021-02-27"),color="#d95f02",vjust=0.5,hjust=0.5)
@@ -392,9 +397,9 @@ Una observación que podemos notar es que el pico de muertes e infecciones ocurr
 
 Por otra parte, el efecto de la vacunación en la cantidad de casos nuevos por día, muestra un comportamiento mas inestable, aunque a partir de Junio se observa también una tendencia a la baja de infectados nuevos por día.
 
-A su vez, resulta interesante visualizar la evolución de la Tasa de Letalidad en nuestro país y ver el impacto que ha sufrido a partir de la vacunación.
+Resulta de interés visualizar la evolución de la tasa de letalidad en nuestro país y observar el impacto que ha sufrido a partir de la vacunación.
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.pos = 'H', fig.cap='Evolución de la Tasa de Letalidad del Covid-19 en Uruguay con modelado generalizado aditivo (GAM). Se puede apreciar que el impacto de la vacunación no es tan notoria en la Tasa de Letalidad. \\label{f}'}
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.pos = 'H', fig.cap='Evolución de la Tasa de Letalidad del Covid-19 en Uruguay con modelado generalizado aditivo (GAM). Se puede apreciar que el impacto de la vacunación no es tan notoria en la letalidad del virus. \\label{f}'}
 fig6 <- Datos_Region %>%
    mutate(Tasa_de_Letalidad = (PEOPLE_DEATH_COUNT/PEOPLE_POSITIVE_CASES_COUNT )*100)  %>% 
   filter(COUNTRY == "Uruguay") %>% 
@@ -410,9 +415,9 @@ fig6 <- Datos_Region %>%
 print(fig6)
 ```
 
-A partir del gráfico, podemos observar que la Tasa de Letalidad no muestra una tendencia a disminuir como concecuencia de la vacunación, por lo contrario, se mantiene creciente, aunque pasados los dos meses del inicio de vacunación, pareciera estabilizarse entorno al 1,4% y 1,5%.
+A partir del gráfico, podemos observar que la tasa de letalidad no muestra una tendencia a disminuir como concecuencia de la vacunación, por lo contrario, se mantiene creciente, aunque pasados los dos meses del inicio de vacunación, pareciera estabilizarse entorno al 1,4% y 1,5%.
 
-Esto lo podemos comprobar analizando la correclación entre el *índice de personas totalmente vacunadas* y la *Tasa de Letalidad*, la cual nos da un valor de 0.9780337, lo que manifiesta una relación positiva casi perfecta. Cabe destacar, que el pico de la *Tasa de Letalidad* ocurrió el 18 de Julio de 2020, con un valor de 3.160920. Para el momento en que comenzó la vacunación, que fue el 27 de Febrero de 2021, esta tasa era del 1.0512186.
+Esto lo podemos comprobar analizando la correclación entre el *índice de personas totalmente vacunadas* y la *tasa de letalidad*, la cual nos da un valor de 0.9780337, lo que manifiesta una relación positiva casi perfecta. Cabe destacar, que el pico de la *tasa de letalidad* ocurrió el 18 de Julio de 2020, con un valor de 3.160920. Para el momento en que comenzó la vacunación, que fue el 27 de Febrero de 2021, esta tasa era del 1.0512186.
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.pos = 'H', fig.cap='Diagrama de dispersión entre la Tasa de Letalidad y el Indice de personas totalmente vacunadas en Uruguay con modelado generalizado aditivo (GAM).\\label{f5}'}
 Datos_Pro_Uy_Por_Fecha <- datos_UY_Por_Fecha %>% 
@@ -443,11 +448,11 @@ print(fig5)
 
 ## Aplicación Shiny
 
-Nuestra aplicacion Shiny, está realizada de forma que sea interactiva y atractiva a la vista del usuario aparte de ser informativa y ayudar interpretar más facilmente al análisis realizado sobre el virus COVID-19.  
+Nuestra aplicacion Shiny, está realizada de forma que sea interactiva y atractiva a la vista del usuario, aparte de ser informativa y permitir interpretar más facilmente al análisis realizado sobre el virus COVID-19.  
 
 La aplicación utiliza:
   
-* ggplot para la mayor parte de graficos
+* ggplot y  para la mayor parte de graficos
 + ggiraph para el mapamundi interactivo
 + dygraph y xts en lineas temporales
 + tidyverse para el manejo de datos de las tablas
@@ -460,22 +465,23 @@ La aplicacion funciona utilizando los elementos mencionados arriba donde a poste
 
 ### ShinyDashboard
 
-ShinyDashboard es una extension de Shiny que ayuda a crear "Dashboards" facilitando la visualizacion y presentacion de la informacion necesaria.  
+ShinyDashboard es una extension de Shiny que ayuda a crear "Dashboards" facilitando la visualizacion y presentación de la información necesaria.  
 
 ```{r, echo=FALSE, fig.align='center', fig.cap='Visualizacion general de la interfaz ShinyDashboard\\label{tab}'}
 knitr::include_graphics("Fotos/Shiny1.png", dpi=300)
 ```
 
-Consigo, tenemos una barra lateral(Dashboard) donde podemos subdividir la Shiny en secciones, liberando la concentración de datos seleccionando las rayitas.  
+Consigo, tenemos una barra lateral(Dashboard) donde podemos subdividir la Shiny en secciones, liberando la concentración de datos seleccionando las rayitas.
+
 ```{r, echo=FALSE, fig.align='center', fig.cap='Uso de la Dashboard\\label{tab}'}
 knitr::include_graphics("Fotos/Shiny2.png", dpi=150)
 ```
 
 ### Ggiraph
 
-GGiraph es una extension de GGplot2 donde podemos generar graficos interactivos, en esta ocacion, lo utilizamos para generar un mapamundi interactivo.  
+*GGiraph* es una extension de *GGplot2*, donde podemos generar graficos interactivos, en esta ocasión, lo utilizamos para generar un mapamundi interactivo.  
 En dicho mapa, podemos visualizar la cantidad de Muertos e Infectados de forma diaria o acumulativa y hasta que dia del año deseamos verlo.  
-Todo eso es posible gracias a la utilizacion de Shiny y su Dashboard que facilita la visualizacion del Mapa.
+Todo eso es posible gracias a la utilización de Shiny y su Dashboard que facilita la visualizacion del Mapa.
 
 
 ```{r, echo=FALSE, fig.align='center', fig.cap='Mapa interactivo\\label{tab}'}
@@ -486,9 +492,8 @@ knitr::include_graphics("Fotos/Shiny4.png", dpi=150)
 
 ### DyGraph, plotly y xts
 
-DyGraph y xts se utiliza para realizar graficos donde podemos movernos sobre la linea temporal, realizar acercamientos y analisis mas comodos al poder elegir el rango temporal.
-
-Plotly tambien fue utilizado con el mismo objetivo pero para otros tipos de graficos
+*DyGraph* permite realizar gráficos dinámicos para series de tiempo, en formato *xts*, en los cuáles podemos movernos sobre la línea temporal, realizar acercamientos, resaltados de puntos y elegir el rango temporal. 
+A su vez, *Plotly* tambien nos permite generar visualizaciones dinámicas pero para otro tipo de gráficos.
 
 ```{r, echo=FALSE, fig.align='center', fig.cap='Interaccion de Dygraph\\label{tab}'}
 knitr::include_graphics("Fotos/Shiny3.png", dpi=200)
@@ -501,7 +506,7 @@ knitr::include_graphics("Fotos/Shiny3.png", dpi=200)
 
 - En cuanto a la Tasa de Letalidad de la epidemia, a excepción de Perú y Ecuador que presentaron una tasa promedio del 10.6% y 6.17% respectivamente, el comportamiento de ésta en los restantes paises se entornó entre el 1% y el 4%, siendo los primeros días de contagio los que presentaron mayor variación de la misma entre los paises. 
 
-- Respecto a la vacunación en Uruguay, se aprecia una leve tendencia a la disminución de nuevos contagios y más notoria en los fallecidos por día luego de los 2 meses que comenzó el plan de vacunación. Sin embargo, la Tasa de Letalidad se mantuvo creciente hasta los 2 meses luego del comienzo de la vacunación y ahora pareciera estabilizarse entorno al 1,4% y 1,5%. 
+- Respecto a la vacunación en Uruguay, se aprecia una leve tendencia a la disminución de nuevos contagios y más notoria en los fallecidos por día luego de los 2 meses que comenzó el plan de vacunación. Sin embargo, la tasa de letalidad se mantuvo creciente hasta los 2 meses luego del comienzo de la vacunación y ahora pareciera estabilizarse entorno al 1,4% y 1,5%.
 
 ## Referencias
 
