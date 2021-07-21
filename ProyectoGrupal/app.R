@@ -26,9 +26,8 @@ library(plotly)
 
 
 Datos<- read_csv("../Data/COVID-19 Activity.zip")
-vacunacion<- read.csv("https://raw.githubusercontent.com/3dgiordano/covid-19-uy-vacc-data/main/data/Uruguay.csv")
-world <- ne_countries(scale = "medium", returnclass = "sf")
-poblacion<- read_csv("../Data/Population2019.csv")
+world <- ne_countries(scale = "medium", returnclass = "sf")%>%select(admin, sovereignt)
+poblacion<- read_csv("../Data/poblacion.csv")
 
 
       ##########
@@ -160,9 +159,7 @@ contenido <- dashboardBody(
                   p("Pasa el mouse sobre un pais para saber la cantidad de casos/Muertes"),girafeOutput("mapa")
                   )
                   )
-          ),
-          
-          tabPanel("Tabla",fluidRow(DT::dataTableOutput("tabla")))
+          )
           )
 ),# CLOSES TABITEM MAPA
 
@@ -210,7 +207,7 @@ ui <- dashboardPage(skin = "purple", encabezado, barra_lateral, contenido)
 server <- function(input, output, session) {
   
   
-  #OPTIMIZACION EN PROGRESO
+
 
   Datos$REPORT_DATE<- as.Date(Datos$REPORT_DATE)
   colnames(Datos) = c("PEOPLE_POSITIVE_CASES_COUNT", "COUNTY_NAME","PROVINCE_STATE_NAME","REPORT_DATE" ,"CONTINENT_NAME","DATA_SOURCE_NAME",
@@ -219,7 +216,7 @@ server <- function(input, output, session) {
   
   Datos$COUNTRY <- factor(Datos$COUNTRY)
   
-  
+
   
   
   # Date selector
@@ -311,6 +308,10 @@ server <- function(input, output, session) {
   
 ##### #####  #####  #####  #####  #####  #####  #####  #####  #####  #####  #####   
 
+  # PICOS DE CONTAGIO | MUERTES
+  
+  # PICO DE CONTAGIOS
+  #  SELECCIONA FECHA DEL PICO
   test<-reactive(
     Datos %>% filter(COUNTRY==input$va)
    )
@@ -331,6 +332,9 @@ server <- function(input, output, session) {
       labs(x="Fecha", y="Casos de infectados diarios")
     
     )
+  
+  #  PICO DE MUERTES
+  #  SELECCIONA FECHA DEL PICO
   maximo2<-reactive(
     test()%>%filter(PEOPLE_DEATH_NEW_COUNT==max(PEOPLE_DEATH_NEW_COUNT))
   )
@@ -350,7 +354,7 @@ server <- function(input, output, session) {
   
   ##### #####  #####  #####  #####  #####  #####  #####  #####  #####  #####  #####   
   
-  
+  # GRAFICO DE URUGUAY SOBRE EVOLUCION GENERAL DEL COVID
   
   datos_UY_Por_Fecha <- reactive(
     Datos %>% filter(COUNTRY == "Uruguay") %>% 
@@ -374,33 +378,35 @@ server <- function(input, output, session) {
   
   ##### #####  #####  #####  #####  #####  #####  #####  #####  #####  #####  #####   
   
+  # TASAS DE MUERTES | TASAS DE CONTAGIOS
+  
+  # SELECCIONA PAISES
+  Datos_Region2<- reactive(
+    Datos %>% 
+      group_by(COUNTRY)%>%
+      filter(COUNTRY==c("Uruguay", "Argentina", "Brazil", "Paraguay", "Chile", "Venezuela", "Peru", "Colombia", "Ecuador"))%>%
+      select(REPORT_DATE, starts_with("People_"))%>%
+      arrange(REPORT_DATE)
+  )
   
   Datos_Region <- reactive(
     if(input$tsa=="Todos"){
-    
-    
-    Datos %>% 
-    filter(CONTINENT_NAME == "America") %>% 
-    group_by(COUNTRY) %>%
-    filter(COUNTRY == c("Uruguay", "Argentina", "Brazil", "Paraguay", "Chile", "Venezuela", "Peru", "Colombia", "Ecuador")) %>% 
-    select(REPORT_DATE, starts_with("People_")) %>% 
-    arrange(REPORT_DATE)
+    Datos_Region2()
     }else{
-      Datos %>% 
-        filter(CONTINENT_NAME == "America") %>% 
-        group_by(COUNTRY) %>%
-        filter(COUNTRY == input$tsa) %>% 
-        select(REPORT_DATE, starts_with("People_")) %>% 
-        arrange(REPORT_DATE)
+      Datos_Region2() %>% 
+        filter(COUNTRY == input$tsa)
 }
       )
-  
-  popregion <- reactive(poblacion %>% filter(Time==2020)%>% select(Location,PopTotal,Time)%>%merge(Datos_Region(), by.x="Location", by.y="COUNTRY")%>%
+  # POBLACION SUMADA A LA DATA 
+  popregion <- reactive(
+    poblacion %>% 
+    merge(Datos_Region(), by.x="Location", by.y="COUNTRY")%>%
     group_by(Location)%>%
     summarise(infeccion=round((PEOPLE_POSITIVE_CASES_COUNT/(PopTotal*1000)),digits=2), REPORT_DATE,letal=round((PEOPLE_DEATH_COUNT/PEOPLE_POSITIVE_CASES_COUNT),digits=2))
   
   )
   
+  # GRAFICO 
   tasagraf<- reactive(
     popregion() %>% ggplot() + 
       geom_line(aes(x=REPORT_DATE, y=infeccion, color = "Tasa de infección")) +
@@ -412,6 +418,7 @@ server <- function(input, output, session) {
       scale_y_continuous(labels=scales::percent_format(accuracy = 5)) 
   )
   
+  # TABLA
   cuadro2 <- reactive(popregion() %>% 
     filter(letal>0) %>% 
     group_by(Location) %>% 
@@ -434,8 +441,7 @@ server <- function(input, output, session) {
   
   
   
-  output$tabla <- DT::renderDataTable({casos()})
-  
+ 
   output$vacunas<- renderDygraph({dyg()})
   output$test33<- renderPlotly({test2()})
   output$test32<- renderPlotly({test21()})
