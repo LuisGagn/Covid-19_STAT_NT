@@ -8,6 +8,8 @@ header-includes:
 - \floatplacement{figure}{H}
 - \usepackage{booktabs}
 - \usepackage{sectsty} \sectionfont{\centering \emph}
+- \usepackage {hyperref}
+- \hypersetup {colorlinks = true, linkcolor = blue, urlcolor = blue}
 output:
   pdf_document: default
   fig_caption: FALSE
@@ -76,7 +78,7 @@ knitr::include_graphics("Fotos/Udelar.png", dpi=250)
 
 ## Resumen
 
-El siguiente trabajo tiene como objetivo la presentación del proyecto final del curso *Nuevas Tecnologías para el análisis estadístico de datos* del año 2021. A lo largo del mismo, se aplicarán distintas técnicas de investigación mediante herramientas computacionales aprendidas en el curso para realizar un análisis exploratorio del Covid-19. Se hará énfasis en la evolución de la epidemia en la región y principalmente en Uruguay, profundizaremos en indicadores como la Tasa de Letalidad e Infección y estudiaremos el efecto que ha tenido la vacunación de nuestra población, entre otros puntos. Para esto, se hará uso del software Rstudio, realizando una aplicación web Shiny, siendo reporoducible y disponible para su uso en GitHub.  
+El siguiente trabajo tiene como objetivo la presentación del proyecto final del curso *Nuevas Tecnologías para el análisis estadístico de datos* del año 2021. A lo largo del mismo, se aplicarán distintas técnicas de investigación mediante herramientas computacionales aprendidas en el curso para realizar un análisis exploratorio del Covid-19. Se hará énfasis en la evolución de la epidemia en la región y principalmente en Uruguay, profundizaremos en indicadores como la Tasa de Letalidad e Infección y estudiaremos el efecto que ha tenido la vacunación de nuestra población, entre otros puntos. Para esto, se hará uso del software Rstudio, realizando una [aplicación web Shiny](https://luisgagn.shinyapps.io/Proyecto_COVID-19), siendo reporoducible y disponible para su uso en GitHub.  
  
 ## Introducción
 
@@ -97,7 +99,7 @@ A partir de ellos, pretendemos dar respuesta a estas interrogantes, analizando d
 ```{r, echo=FALSE, warning=FALSE, include=FALSE}
 Datos <- read_csv("../Data/COVID-19 Activity.zip")
 vacunacion <- read.csv("https://raw.githubusercontent.com/3dgiordano/covid-19-uy-vacc-data/main/data/Uruguay.csv")
-poblacion<- read_csv("../Data/Population2019.csv")
+poblacion<- read_csv("../Data/Population2019.zip")
 
 #Manipulacion
 str(Datos)
@@ -448,7 +450,7 @@ print(fig5)
 
 ## Aplicación Shiny
 
-Nuestra aplicacion Shiny, está realizada de forma que sea interactiva y atractiva a la vista del usuario, aparte de ser eficiente en términos de recursos de la máquina, permitiendo interpretar facilmente al análisis realizado sobre el virus COVID-19.  
+Nuestra [aplicación Shiny](https://luisgagn.shinyapps.io/Proyecto_COVID-19), está realizada de forma que sea interactiva y atractiva a la vista del usuario, aparte de ser eficiente en términos de recursos de la máquina, permitiendo interpretar facilmente al análisis realizado sobre el virus COVID-19.  
 
 La aplicación utiliza:
   
@@ -514,9 +516,9 @@ knitr::include_graphics("Fotos/Shiny3.png", dpi=200)
 
 ## Referencias
 
-- Hadley Wickham & Garrett Grolemund, 2017, R for Data Science.
+- Hadley Wickham & Garrett Grolemund, 2017, [R for Data Science](https://r4ds.had.co.nz/).
 
-- Hadley Wickham, 2020, Mastering Shiny.
+- Hadley Wickham, 2020, [Mastering Shiny](https://mastering-shiny.org/).
 
 - Natalia da Silva, 2021, Notas del curso Nuevas tecnologías para el análisis estadístico de datos.
 

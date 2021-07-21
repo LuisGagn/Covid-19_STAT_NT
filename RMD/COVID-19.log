@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2021.7.18)  19 JUL 2021 04:32
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2021.7.18)  21 JUL 2021 13:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -415,8 +415,9 @@ LaTeX Warning: Command \underbar  has changed.
 LaTeX Warning: Command \underline  has changed.
                Check if current package is valid.
 
-) (c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/babel/babel.st
-y
+)
+Package hyperref Info: Option `colorlinks' set `true' on input line 69.
+(c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/babel/babel.sty
 Package: babel 2021/06/28 3.61 The Babel package
 (c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/babel/babel.def
 File: babel.def 2021/06/28 3.61 Babel common definitions
@@ -477,9 +478,6 @@ LaTeX Warning: Label `f' multiply defined.
 LaTeX Warning: Label `f' multiply defined.
 
 
-LaTeX Warning: Label `f' multiply defined.
-
-
 LaTeX Warning: Label `tab' multiply defined.
 
 
@@ -491,24 +489,24 @@ LaTeX Warning: Label `tab' multiply defined.
 )
 \openout1 = `COVID-19.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
 
 (c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epsto
 pdf-base.sty
@@ -528,7 +526,7 @@ df-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-Package hyperref Info: Link coloring OFF on input line 86.
+Package hyperref Info: Link coloring ON on input line 88.
 
 (c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/nameref.s
 ty
@@ -544,9 +542,9 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count290
 )
-LaTeX Info: Redefining \ref on input line 86.
-LaTeX Info: Redefining \pageref on input line 86.
-LaTeX Info: Redefining \nameref on input line 86.
+LaTeX Info: Redefining \ref on input line 88.
+LaTeX Info: Redefining \pageref on input line 88.
+LaTeX Info: Redefining \nameref on input line 88.
 (./COVID-19.out) (./COVID-19.out)
 \@outlinefile=\write3
 \openout3 = `COVID-19.out'.
@@ -585,40 +583,40 @@ LaTeX Info: Redefining \nameref on input line 86.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Info: Redefining \. on input line 86.
-LaTeX Info: Redefining \% on input line 86.
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 8
-8.
+LaTeX Info: Redefining \. on input line 88.
+LaTeX Info: Redefining \% on input line 88.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 9
+0.
 (c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 8
-8.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 9
+0.
 (c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-88.
+90.
 (c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-88.
+90.
 (c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 88.
+(Font)              <12> on input line 90.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 88.
+(Font)              <8> on input line 90.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 88.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 88.
+(Font)              <6> on input line 90.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 90.
 
 (c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 88.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 90.
 
 (c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -626,96 +624,96 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 <Fotos/Udelar.png, id=72, 481.8pt x 662.475pt>
 File: Fotos/Udelar.png Graphic file (type png)
 <use Fotos/Udelar.png>
-Package pdftex.def Info: Fotos/Udelar.png  used on input line 89.
+Package pdftex.def Info: Fotos/Udelar.png  used on input line 91.
 (pdftex.def)             Requested size: 185.00468pt x 254.38144pt.
 [1
 
 {c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdfte
 x.map} <./Fotos/Udelar.png>] [2]
-<Fotos/MapaMuertos.png, id=96, 639.13782pt x 211.54031pt>
+<Fotos/MapaMuertos.png, id=97, 639.13782pt x 211.54031pt>
 File: Fotos/MapaMuertos.png Graphic file (type png)
 <use Fotos/MapaMuertos.png>
-Package pdftex.def Info: Fotos/MapaMuertos.png  used on input line 197.
+Package pdftex.def Info: Fotos/MapaMuertos.png  used on input line 202.
 (pdftex.def)             Requested size: 245.71286pt x 81.32544pt.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 217.
+(Font)              <10> on input line 222.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 217.
+(Font)              <7> on input line 222.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 217.
+(Font)              <5> on input line 222.
 [3pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.238 \newpage
+l.243 \newpage
               pdfTeX warning (ext4): destination with the same identifier (name
 {table.1}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.238 \newpage
+l.243 \newpage
                <./Fotos/MapaMuertos.png>]
-<COVID-19_files/figure-latex/unnamed-chunk-7-1.pdf, id=106, 462.72874pt x 316.1
+<COVID-19_files/figure-latex/unnamed-chunk-7-1.pdf, id=107, 462.72874pt x 316.1
 8124pt>
 File: COVID-19_files/figure-latex/unnamed-chunk-7-1.pdf Graphic file (type pdf)
 
 <use COVID-19_files/figure-latex/unnamed-chunk-7-1.pdf>
 Package pdftex.def Info: COVID-19_files/figure-latex/unnamed-chunk-7-1.pdf  use
-d on input line 255.
+d on input line 261.
 (pdftex.def)             Requested size: 462.73466pt x 316.18529pt.
 [4pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.286 E
-       s preciso recordar, que el número de infecciones es un denominador <./C
-OVID-19_files/figure-latex/unnamed-chunk-7-1.pdf>]
-<COVID-19_files/figure-latex/unnamed-chunk-8-1.pdf, id=121, 464.73625pt x 310.1
+l.291 
+       <./COVID-19_files/figure-latex/unnamed-chunk-7-1.pdf>]
+<COVID-19_files/figure-latex/unnamed-chunk-8-1.pdf, id=122, 464.73625pt x 310.1
 5875pt>
 File: COVID-19_files/figure-latex/unnamed-chunk-8-1.pdf Graphic file (type pdf)
 
 <use COVID-19_files/figure-latex/unnamed-chunk-8-1.pdf>
 Package pdftex.def Info: COVID-19_files/figure-latex/unnamed-chunk-8-1.pdf  use
-d on input line 299.
+d on input line 303.
 (pdftex.def)             Requested size: 464.7351pt x 310.15799pt.
-[5pdfTeX warning (ext4): destination with the same identifier (name{figure.3}) 
-has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.331 
-      pdfTeX warning (ext4): destination with the same identifier (name{table.2
-}) has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.331 
-       <./COVID-19_files/figure-latex/unnamed-chunk-8-1.pdf>]
-<COVID-19_files/figure-latex/unnamed-chunk-10-1.pdf, id=135, 462.72874pt x 310.
+
+Underfull \hbox (badness 10000) in paragraph at lines 303--307
+[][]
+ []
+
+[5 <./COVID-19_files/figure-latex/unnamed-chunk-8-1.pdf>]
+<COVID-19_files/figure-latex/unnamed-chunk-10-1.pdf, id=134, 462.72874pt x 310.
 15875pt>
 File: COVID-19_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (type pdf
 )
 <use COVID-19_files/figure-latex/unnamed-chunk-10-1.pdf>
 Package pdftex.def Info: COVID-19_files/figure-latex/unnamed-chunk-10-1.pdf  us
-ed on input line 342.
+ed on input line 351.
 (pdftex.def)             Requested size: 462.72762pt x 310.15799pt.
-[6pdfTeX warning (ext4): destination with the same identifier (name{figure.4}) 
-has been already used, duplicate ignored
+[6pdfTeX warning (ext4): destination with the same identifier (name{table.2}) h
+as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.373 A
-       demás de las medidas y protocolos sanitarios para combatir el Covid-19 
-<./COVID-19_files/figure-latex/unnamed-chunk-10-1.pdf>]
-<COVID-19_files/figure-latex/unnamed-chunk-11-1.pdf, id=153, 467.7475pt x 310.1
-5875pt>
+l.368 E
+       l comportamiento de esta tasa a nivel de la región ha sido bastantepdfT
+eX warning (ext4): destination with the same identifier (name{figure.3}) has be
+en already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.368 E
+       l comportamiento de esta tasa a nivel de la región ha sido bastante <./
+COVID-19_files/figure-latex/unnamed-chunk-10-1.pdf>]
+<COVID-19_files/figure-latex/unnamed-chunk-11-1.pdf, id=153, 498.86375pt x 203.
+76125pt>
 File: COVID-19_files/figure-latex/unnamed-chunk-11-1.pdf Graphic file (type pdf
 )
 <use COVID-19_files/figure-latex/unnamed-chunk-11-1.pdf>
 Package pdftex.def Info: COVID-19_files/figure-latex/unnamed-chunk-11-1.pdf  us
-ed on input line 400.
-(pdftex.def)             Requested size: 467.74634pt x 310.15799pt.
-[7pdfTeX warning (ext4): destination with the same identifier (name{figure.5}) 
+ed on input line 409.
+(pdftex.def)             Requested size: 469.76932pt x 191.8776pt.
+[7pdfTeX warning (ext4): destination with the same identifier (name{figure.4}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.416 ...abel{anuxe1lisis-vacunatorio-en-uruguay}}
+l.425 ...abel{anuxe1lisis-vacunatorio-en-uruguay}}
                                                    <./COVID-19_files/figure-lat
 ex/unnamed-chunk-11-1.pdf>]
 <COVID-19_files/figure-latex/unnamed-chunk-12-1.pdf, id=169, 462.72874pt x 310.
@@ -724,37 +722,37 @@ File: COVID-19_files/figure-latex/unnamed-chunk-12-1.pdf Graphic file (type pdf
 )
 <use COVID-19_files/figure-latex/unnamed-chunk-12-1.pdf>
 Package pdftex.def Info: COVID-19_files/figure-latex/unnamed-chunk-12-1.pdf  us
-ed on input line 429.
+ed on input line 438.
 (pdftex.def)             Requested size: 462.72762pt x 310.15799pt.
-[8pdfTeX warning (ext4): destination with the same identifier (name{figure.6}) 
+[8pdfTeX warning (ext4): destination with the same identifier (name{figure.5}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.463 E
+l.472 E
        sta investigación puede profundizarse en mayor grado mediante la Shiny,
  <./COVID-19_files/figure-latex/unnamed-chunk-12-1.pdf>]
-<COVID-19_files/figure-latex/unnamed-chunk-13-1.pdf, id=184, 860.21375pt x 779.
-91376pt>
+<COVID-19_files/figure-latex/unnamed-chunk-13-1.pdf, id=184, 860.21375pt x 707.
+64375pt>
 File: COVID-19_files/figure-latex/unnamed-chunk-13-1.pdf Graphic file (type pdf
 )
 <use COVID-19_files/figure-latex/unnamed-chunk-13-1.pdf>
 Package pdftex.def Info: COVID-19_files/figure-latex/unnamed-chunk-13-1.pdf  us
-ed on input line 471.
-(pdftex.def)             Requested size: 469.75882pt x 425.90736pt.
-[9pdfTeX warning (ext4): destination with the same identifier (name{figure.7}) 
+ed on input line 480.
+(pdftex.def)             Requested size: 469.75882pt x 386.44104pt.
+[9pdfTeX warning (ext4): destination with the same identifier (name{figure.6}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.485 P
-       or otra parte, el efecto de la vacunación en la cantidad de casos <./CO
-VID-19_files/figure-latex/unnamed-chunk-13-1.pdf>]
+l.499 R
+       esulta de interés visualizar la evolución de la tasa de letalidad en <
+./COVID-19_files/figure-latex/unnamed-chunk-13-1.pdf>]
 <COVID-19_files/figure-latex/unnamed-chunk-14-1.pdf, id=197, 464.73625pt x 310.
 15875pt>
 File: COVID-19_files/figure-latex/unnamed-chunk-14-1.pdf Graphic file (type pdf
 )
 <use COVID-19_files/figure-latex/unnamed-chunk-14-1.pdf>
 Package pdftex.def Info: COVID-19_files/figure-latex/unnamed-chunk-14-1.pdf  us
-ed on input line 496.
+ed on input line 505.
 (pdftex.def)             Requested size: 464.7351pt x 310.15799pt.
 <COVID-19_files/figure-latex/unnamed-chunk-15-1.pdf, id=198, 324.21124pt x 316.
 18124pt>
@@ -762,65 +760,61 @@ File: COVID-19_files/figure-latex/unnamed-chunk-15-1.pdf Graphic file (type pdf
 )
 <use COVID-19_files/figure-latex/unnamed-chunk-15-1.pdf>
 Package pdftex.def Info: COVID-19_files/figure-latex/unnamed-chunk-15-1.pdf  us
-ed on input line 518.
+ed on input line 527.
 (pdftex.def)             Requested size: 324.23022pt x 316.19975pt.
-[10pdfTeX warning (ext4): destination with the same identifier (name{figure.8})
+[10pdfTeX warning (ext4): destination with the same identifier (name{figure.7})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.523 
+l.532 
        <./COVID-19_files/figure-latex/unnamed-chunk-14-1.pdf>]
-<Fotos/Shiny1.png, id=214, 1434.10782pt x 744.53156pt>
+<Fotos/Shiny1.png, id=215, 1133.4345pt x 547.44525pt>
 File: Fotos/Shiny1.png Graphic file (type png)
 <use Fotos/Shiny1.png>
-Package pdftex.def Info: Fotos/Shiny1.png  used on input line 564.
-(pdftex.def)             Requested size: 458.902pt x 238.2436pt.
-[11pdfTeX warning (ext4): destination with the same identifier (name{figure.9})
+Package pdftex.def Info: Fotos/Shiny1.png  used on input line 584.
+(pdftex.def)             Requested size: 453.14093pt x 218.86562pt.
+[11pdfTeX warning (ext4): destination with the same identifier (name{figure.8})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.570 
-       <./COVID-19_files/figure-latex/unnamed-chunk-15-1.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 571--574
-
- []
-
-<Fotos/Shiny2.png, id=233, 389.95688pt x 408.02437pt>
+l.589 \end{figure}
+                   <./COVID-19_files/figure-latex/unnamed-chunk-15-1.pdf>]
+<Fotos/Shiny2.png, id=234, 389.95688pt x 408.02437pt>
 File: Fotos/Shiny2.png Graphic file (type png)
 <use Fotos/Shiny2.png>
-Package pdftex.def Info: Fotos/Shiny2.png  used on input line 577.
+Package pdftex.def Info: Fotos/Shiny2.png  used on input line 599.
 (pdftex.def)             Requested size: 249.32758pt x 260.87944pt.
-[12pdfTeX warning (ext4): destination with the same identifier (name{figure.10}
-) has been already used, duplicate ignored
+[12pdfTeX warning (ext4): destination with the same identifier (name{figure.9})
+ has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.594 
+l.616 
       pdfTeX warning (ext4): destination with the same identifier (name{figure.
-11}) has been already used, duplicate ignored
+10}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.594 
+l.616 
        <./Fotos/Shiny1.png> <./Fotos/Shiny2.png>]
-<Fotos/Shiny4.png, id=242, 718.18312pt x 529.98pt>
+<Fotos/Shiny4.png, id=243, 718.18312pt x 529.98pt>
 File: Fotos/Shiny4.png Graphic file (type png)
 <use Fotos/Shiny4.png>
-Package pdftex.def Info: Fotos/Shiny4.png  used on input line 597.
+Package pdftex.def Info: Fotos/Shiny4.png  used on input line 619.
 (pdftex.def)             Requested size: 459.64659pt x 339.1941pt.
-<Fotos/Shiny3.png, id=243, 894.34125pt x 529.22719pt>
+<Fotos/Shiny3.png, id=244, 894.34125pt x 529.22719pt>
 File: Fotos/Shiny3.png Graphic file (type png)
 <use Fotos/Shiny3.png>
-Package pdftex.def Info: Fotos/Shiny3.png  used on input line 616.
+Package pdftex.def Info: Fotos/Shiny3.png  used on input line 639.
 (pdftex.def)             Requested size: 429.29257pt x 254.03424pt.
-[13pdfTeX warning (ext4): destination with the same identifier (name{figure.12}
+[13pdfTeX warning (ext4): destination with the same identifier (name{figure.11}
 ) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.622 
+l.645 
        <./Fotos/Shiny4.png>] [14pdfTeX warning (ext4): destination with the sam
-e identifier (name{figure.13}) has been already used, duplicate ignored
+e identifier (name{figure.12}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.666 \end{document}
+l.691 \end{document}
                      <./Fotos/Shiny3.png>] (./COVID-19.aux
 LaTeX Info: Redefining \. on input line 25.
 LaTeX Info: Redefining \% on input line 25.
@@ -832,13 +826,13 @@ Package rerunfilecheck Info: File `COVID-19.out' has not changed.
 (rerunfilecheck)             Checksum: 04B95ADE26455A3E016EB9D2055FEB3E;2923.
  ) 
 Here is how much of TeX's memory you used:
- 11631 strings out of 480502
- 173402 string characters out of 5898081
- 495276 words of memory out of 5000000
- 29036 multiletter control sequences out of 15000+600000
+ 11632 strings out of 480502
+ 173426 string characters out of 5898081
+ 495282 words of memory out of 5000000
+ 29038 multiletter control sequences out of 15000+600000
  457249 words of font info for 67 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 60i,8n,66p,399b,361s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 60i,8n,66p,399b,368s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.e
 nc}<c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmb
 x10.pfb><c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/l
@@ -848,10 +842,10 @@ e1/public/lm/lmr10.pfb><c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-dist/fonts
 /type1/public/lm/lmr12.pfb><c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-dist/f
 onts/type1/public/lm/lmr17.pfb><c:/Users/lucho/AppData/Roaming/TinyTeX/texmf-di
 st/fonts/type1/public/lm/lmri10.pfb>
-Output written on COVID-19.pdf (14 pages, 734001 bytes).
+Output written on COVID-19.pdf (14 pages, 734750 bytes).
 PDF statistics:
- 309 PDF objects out of 1000 (max. 8388607)
- 241 compressed objects within 3 object streams
- 64 named destinations out of 1000 (max. 500000)
+ 312 PDF objects out of 1000 (max. 8388607)
+ 244 compressed objects within 3 object streams
+ 63 named destinations out of 1000 (max. 500000)
  207 words of extra memory for PDF output out of 10000 (max. 10000000)
 
