@@ -5,10 +5,10 @@ account: luisgagn
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 4351644
-bundleId: 4840456
+bundleId: 4840513
 url: https://luisgagn.shinyapps.io/Proyecto_COVID-19/
-when: 1626849860.38734
-lastSyncTime: 1626849860.38734
+when: 1626851170.12229
+lastSyncTime: 1626851170.12229
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: Population2019.csv|Population2019.zip
