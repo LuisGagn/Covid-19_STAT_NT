@@ -37,7 +37,7 @@ poblacion<- read_csv("../Data/Population2019.csv")
 
     #### Encabezado ####
 
-encabezado <- dashboardHeader(title = "COVID-19 | ANALISIS")
+encabezado <- dashboardHeader(title = "COVID-19 | ANÁLISIS")
 
 #### Barra Lateral ####
 
@@ -80,14 +80,14 @@ contenido <- dashboardBody(
   
  
   tabItems(
-    tabItem(tabName = "inicio", h1("Introduccion"),
+    tabItem(tabName = "inicio", h1("Nuevas tecnologías para el análisis estadístico de datos"),
             HTML('<center><img src="udelar.png", width=200,heigth=400></center>'),
-            h3("El Coronavirus"),p("Coronavirus es una familia de virus conocidos por causar enfermedades que afectan las vías respiratorias de las personas, en mayor manera a la población de más edad y/o con enfermedades respiratorias o pobres condiciones físicas."),
+            h3("Introducción | Coronavirus"),p("Coronavirus es una familia de virus conocidos por causar enfermedades que afectan las vías respiratorias de las personas, en mayor manera a la población de más edad y/o con enfermedades respiratorias o pobres condiciones físicas."),
                                  p("EL COVID-19 es la enfermadad causada por el coronavirus y nos ha afectado de gran manera en estos años. La misma se originó a fines del 2019 con una infección en China y fue declarada pandemia por la OMS el 30 de Enero de 2020, transformándose en una de las crisis sanitarias que más ha afectado a la humanidad."),
             HTML("<br><br>"),
             h4("Objetivo de la aplicación"), p("El objetivo principal de la aplicación es generar un informe interactivo que permita visualizar el efecto del COVID-19 en la población mundial, haciendo énfasis en América y la región. 
                                                A su vez, presentar visualizaciones que permitan interpretar cómo ha sido el proceso de vacunación en Uruguay y su impacto en la epidemia"),
-                                             p("Para lograr eso realizamos varios gráficos y diagramas dinámicos, donde el usuario podrá interactuar e interpretar los resultados rápidamente, observando por su propia cuenta
+                                             p("Para lograr que la app sea eficiente en términos de recursos, utilizamos programación reactiva, generando outputs que dependen de los inputs. Además de esto, se programaron diagramas y gráficos dinámicos, donde el usuario podrá interactuar e interpretar los resultados rápidamente, observando por su propia cuenta
                                                 como ha sido la evolución del virus"),
             
             HTML("<br>"),
@@ -172,7 +172,7 @@ tabItem(tabName="tasita",
                    fluidRow(
                      box(
                        title="Tasa de Mortalidad e Infeccion", status="danger",solidHeader = TRUE,
-                       plotOutput("tasasmi")
+                       plotlyOutput("tasasmi")
                      ),
                      
                        box(
@@ -440,7 +440,7 @@ server <- function(input, output, session) {
   output$test33<- renderPlotly({test2()})
   output$test32<- renderPlotly({test21()})
   output$vacunacion2<-renderPlotly({fig1()})
-  output$tasasmi<- renderPlot({tasagraf()})
+  output$tasasmi<- renderPlotly({tasagraf()})
   output$tabpais<- renderTable({cuadro2()})
 }
 

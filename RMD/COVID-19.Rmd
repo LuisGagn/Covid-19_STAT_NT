@@ -448,30 +448,33 @@ print(fig5)
 
 ## Aplicación Shiny
 
-Nuestra aplicacion Shiny, está realizada de forma que sea interactiva y atractiva a la vista del usuario, aparte de ser informativa y permitir interpretar más facilmente al análisis realizado sobre el virus COVID-19.  
+Nuestra aplicacion Shiny, está realizada de forma que sea interactiva y atractiva a la vista del usuario, aparte de ser eficiente en términos de recursos de la máquina, permitiendo interpretar facilmente al análisis realizado sobre el virus COVID-19.  
 
 La aplicación utiliza:
   
-* ggplot y  para la mayor parte de graficos
+* ggplot y plotly para la mayor parte de gráficos
 + ggiraph para el mapamundi interactivo
 + dygraph y xts en lineas temporales
 + tidyverse para el manejo de datos de las tablas
 + shinydashboard para la interfaz amigable y moderna
++ programación reactiva 
 
 
 ### ¿Comó funciona la aplicación?
 
-La aplicacion funciona utilizando los elementos mencionados arriba donde a posteriori se explicara como funciona cada uno de estos.
+La aplicación funciona combinando los elemtentos mencionados anteriormente y para lograr que la misma sea eficiente en términos de recursos, utilizamos programación reactiva, generando outputs que dependen de los inputs. 
+
+Además de esto, los diagramas y gráficos que se presentan son dinámicos, permitiéndole al usuario interactuar e interpretar los resultados rápidamente, observando por su propia cuenta cómo ha sido la evolución del virus.
 
 ### ShinyDashboard
 
-ShinyDashboard es una extension de Shiny que ayuda a crear "Dashboards" facilitando la visualizacion y presentación de la información necesaria.  
+ShinyDashboard es una extensión de Shiny que ayuda a crear "Dashboards", facilitando la visualización y crando una interfáz atractiva de cara al usuario.  
 
 ```{r, echo=FALSE, fig.align='center', fig.cap='Visualizacion general de la interfaz ShinyDashboard\\label{tab}'}
 knitr::include_graphics("Fotos/Shiny1.png", dpi=300)
 ```
 
-Consigo, tenemos una barra lateral(Dashboard) donde podemos subdividir la Shiny en secciones, liberando la concentración de datos seleccionando las rayitas.
+Consigo, tenemos una barra lateral(Dashboard) donde podemos subdividir la Shiny en secciones, liberando la concentración de datos seleccionando la información que se quiera consultar. A su vez, este menú se puede ocultar, generando más espacio para las visualizaciones e información que se presenta.
 
 ```{r, echo=FALSE, fig.align='center', fig.cap='Uso de la Dashboard\\label{tab}'}
 knitr::include_graphics("Fotos/Shiny2.png", dpi=150)
@@ -479,8 +482,7 @@ knitr::include_graphics("Fotos/Shiny2.png", dpi=150)
 
 ### Ggiraph
 
-*GGiraph* es una extension de *GGplot2*, donde podemos generar graficos interactivos, en esta ocasión, lo utilizamos para generar un mapamundi interactivo.  
-En dicho mapa, podemos visualizar la cantidad de Muertos e Infectados de forma diaria o acumulativa y hasta que dia del año deseamos verlo.  
+*GGiraph* es una extension de *GGplot2*, que permite generar graficos interactivos, en esta ocasión, lo utilizamos para generar un mapamundi interactivo. En dicho mapa, podemos visualizar la cantidad de Muertos e Infectados de forma diaria o acumulativa y hasta que dia del año deseamos verlo.  
 Todo eso es posible gracias a la utilización de Shiny y su Dashboard que facilita la visualizacion del Mapa.
 
 
@@ -492,7 +494,9 @@ knitr::include_graphics("Fotos/Shiny4.png", dpi=150)
 
 ### DyGraph, plotly y xts
 
-*DyGraph* permite realizar gráficos dinámicos para series de tiempo, en formato *xts*, en los cuáles podemos movernos sobre la línea temporal, realizar acercamientos, resaltados de puntos y elegir el rango temporal. 
+*DyGraph* permite realizar gráficos dinámicos para series de tiempo, en formato *xts*, en los cuáles podemos movernos sobre la línea temporal, elegir su rango, realizar acercamientos y resaltados de puntos entre otras funcionalidades.
+
+
 A su vez, *Plotly* tambien nos permite generar visualizaciones dinámicas pero para otro tipo de gráficos.
 
 ```{r, echo=FALSE, fig.align='center', fig.cap='Interaccion de Dygraph\\label{tab}'}
