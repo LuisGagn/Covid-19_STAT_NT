@@ -7,7 +7,7 @@ Profesores: Natalia da Silva | Federico Molina
 
 Realizado por: Nicolas Ferreira | Luis Gagñevin
 
-Shiny: https://luisgagn.shinyapps.io/Proyecto_COVID-19/
+Shiny: [COVID-19 | ANALISIS ](https://luisgagn.shinyapps.io/Proyecto_COVID-19/)
 
 
 
@@ -15,7 +15,7 @@ Necesario para su reproduccion:
 R 4.0.5
 RStudio
 LaTeX - TinyTex
-Ghostscript 9.54.0 : https://ghostscript.com/download/gsdnld.html
+Ghostscript 9.54.0 : [Ghostscript Download](https://ghostscript.com/download/gsdnld.html)
 
 
 
@@ -38,9 +38,9 @@ Shinyapp
    En caso de fallos ir al final.
 
 
-Datos sobre COVID-19 extraidos de data.world:https://data.world/covid-19-data-resource-hub/covid-19-case-counts
+Datos sobre COVID-19 extraidos de data.world:[Dataset COVID-19](https://data.world/covid-19-data-resource-hub/covid-19-case-counts)
 
-Datos sobre Vacunacion extraidos del directorio de 3dgiordano: https://github.com/3dgiordano/covid-19-uy-vacc-data/tree/main/data
+Datos sobre Vacunacion extraidos del directorio de 3dgiordano: [Vacunacion Uruguay](https://github.com/3dgiordano/covid-19-uy-vacc-data/tree/main/data)
 
 
 
