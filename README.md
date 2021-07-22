@@ -1,7 +1,10 @@
 # Covid-19_STAT_NT
-Analisis de datos sobre Covid-19 en R 
+Analisis de datos sobre Covid-19 en Rstudio 
+
 Materia: Nuevas Tecnologias para el Analisis Estadistico de Datos
+
 Profesores: Natalia da Silva | Federico Molina
+
 Realizado por: Nicolas Ferreira | Luis Gagñevin
 
 Shiny: https://luisgagn.shinyapps.io/Proyecto_COVID-19/
@@ -35,11 +38,15 @@ Shinyapp
    En caso de fallos ir al final.
 
 
+Datos sobre COVID-19 extraidos de data.world:https://data.world/covid-19-data-resource-hub/covid-19-case-counts
+
+Datos sobre Vacunacion extraidos del directorio de 3dgiordano: https://github.com/3dgiordano/covid-19-uy-vacc-data/tree/main/data
 
 
 
 
-# FALLOS CONOCIDOS:
+
+## Fallos Conocidos:
 
 **GhostScript no se encuentra instalado o no esta en el PATH:**
 
@@ -47,7 +54,7 @@ WINDOWS:
 Necesitas agregarlo al PATH para ello sigue los pasos:
 - Panel de control > Sistema y Seguridad > Sistema > Opciones Avanzadas > Avanzado > Enviromental Variables
 - Debajo de Variables del Sistema selecciona Path > Editar > Agrega el directorio de gs, por lo general es: C:\Program Files\gs\gs9.54\bin
-- 
+
 MAC: 
 - Reinicia R
 - Descargar y reinstalar GhostScript desde: http://pages.uoregon.edu/koch/
@@ -56,7 +63,6 @@ MAC:
 **Archivos que no existen en el directorio**
 - Fijarse que todas las carpetas esten descargadas, tanto las Fotos como la carpeta Data.
 - Reinstalar readr [install.packages("readr")]
-- En caso de descargar los archivos nuevamente y no funcionar mover la Data hacia la carpeta necesaria y cambiar su ruta
 
 **Problema con la reproduccion del mapamundi**
 - Reinstalar rgeos [install.packages(rgeos)]
