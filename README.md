@@ -6,7 +6,7 @@ Realizado por: Nicolas Ferreira | Luis Gagñevin
 
 Shiny: https://luisgagn.shinyapps.io/Proyecto_COVID-19/
 
-###########################
+
 
 Necesario para su reproduccion:
 R 4.0.5
